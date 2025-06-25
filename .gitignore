@@ -1,0 +1,57 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+
+# User-specific files
+.vscode/
+.idea/
+*.swp
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio Code files
+.vscode/
+
+## Rider project files
+.idea/
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## IIS Express
+/.vs/
+*.vspscc
+*.vssscc
+*.cache
+*.dbmdl
+
+## Web.config transforms
+Web.Debug.config
+Web.Release.config
+
+## Publish results
+publish/
+*.Publish.xml
+
+## Others
+_ReSharper*/
+*.DotSettings.user
+*.orig
+*.log
+
+# dotenv
+.env
