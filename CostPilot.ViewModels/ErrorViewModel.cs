@@ -1,4 +1,4 @@
-namespace CostPilot.Web.Models
+namespace CostPilot.ViewModels
 {
     public class ErrorViewModel
     {

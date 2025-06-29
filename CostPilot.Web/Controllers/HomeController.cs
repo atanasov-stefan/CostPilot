@@ -2,17 +2,22 @@ using System.Diagnostics;
 
 using Microsoft.AspNetCore.Mvc;
 
-using CostPilot.Web.Models;
+using CostPilot.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CostPilot.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

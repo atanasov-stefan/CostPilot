@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\CostPilot.Common\CostPilot.Common.csproj" />
     <ProjectReference Include="..\CostPilot.Data\CostPilot.Data.csproj" />
+    <ProjectReference Include="..\CostPilot.Services.Core\CostPilot.Services.Core.csproj" />
+    <ProjectReference Include="..\CostPilot.ViewModels\CostPilot.ViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
