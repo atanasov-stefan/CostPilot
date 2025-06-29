@@ -1,0 +1,30 @@
+﻿
+
+@{
+    ViewData["Title"] = "Cost Centers";
+}
+
+<h2>Cost Centers</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var center in Model)
+        {
+            <tr>
+                <td>@center.Code</td>
+                <td>@center.Description</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@center.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@center.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
