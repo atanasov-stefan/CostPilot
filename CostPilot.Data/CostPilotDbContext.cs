@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection;
+
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
+using CostPilot.Data.Models;
 
 namespace CostPilot.Data
 {
@@ -8,6 +12,14 @@ namespace CostPilot.Data
         public CostPilotDbContext(DbContextOptions<CostPilotDbContext> options)
             : base(options)
         {
+        }
+
+        public DbSet<CostCenter> CostCenters { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
