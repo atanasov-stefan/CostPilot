@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CostPilot.Data\CostPilot.Data.csproj" />
+    <ProjectReference Include="..\CostPilot.ViewModels\CostPilot.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

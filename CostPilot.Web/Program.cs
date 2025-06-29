@@ -1,4 +1,6 @@
 using CostPilot.Data;
+using CostPilot.Services.Core;
+using CostPilot.Services.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +30,8 @@ namespace CostPilot.Web
                 options.Password.RequiredLength = 5;
             })
                 .AddEntityFrameworkStores<CostPilotDbContext>();
-            
+
+            builder.Services.AddScoped<ICostCenterService, CostCenterService>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
