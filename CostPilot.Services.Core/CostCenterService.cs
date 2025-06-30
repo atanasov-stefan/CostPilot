@@ -19,8 +19,7 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostCenterAsync(CostCenterCreateInputModel model)
         {
             var operationResult = false;
-            if (this.dbContext.CostCenters.Any(cc => cc.Code == model.Code) == false &&
-                this.dbContext.CostCenters.Any(cc => cc.Description == model.Description) == false)
+            if (this.dbContext.CostCenters.Any(cc => cc.Code == model.Code) == false)
             {
                 var costCenter = new CostCenter()
                 {
@@ -37,7 +36,7 @@ namespace CostPilot.Services.Core
             return operationResult;
         }
 
-        public async Task<bool> DeleteCostCenterAsync(string? id)
+        public async Task<bool> DisableCostCenterAsync(string? id)
         {
             var operationResult = false;
             if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
@@ -45,18 +44,87 @@ namespace CostPilot.Services.Core
                 Guid idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
-                    var costCenterToDelete = await this.dbContext.CostCenters
+                    var costCenterToDisable = await this.dbContext.CostCenters
                         .FirstOrDefaultAsync(cc => cc.Id == idGuid);
-                    if (costCenterToDelete != null) 
+                    if (costCenterToDisable != null)
                     {
                         operationResult = true;
-                        costCenterToDelete.IsDeleted = true;
+                        costCenterToDisable.IsDeleted = true;
                         await this.dbContext.SaveChangesAsync();
                     }
                 }
             }
 
             return operationResult;
+        }
+
+        public async Task<bool> EditCostCenterAsync(CostCenterEditInputModel model)
+        {
+            var operationResult = false;
+            if (this.dbContext.CostCenters.Any(cc => cc.Description == model.Description) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
+            {
+                Guid idGuid = Guid.Empty;
+                if (Guid.TryParse(model.Id, out idGuid) == true)
+                {
+                    var costCenterForEdit = await this.dbContext.CostCenters
+                    .FirstOrDefaultAsync(cc => cc.Id == idGuid);
+                    if (costCenterForEdit != null)
+                    {
+                        operationResult = true;
+                        costCenterForEdit.Description = model.Description;
+                        await this.dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return operationResult;
+        }
+
+        public async Task<bool> EnableCostCenterAsync(string? id)
+        {
+            var operationResult = false;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
+            {
+                Guid idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costCenterToEnable = await this.dbContext.CostCenters
+                        .FirstOrDefaultAsync(cc => cc.Id == idGuid);
+                    if (costCenterToEnable != null)
+                    {
+                        operationResult = true;
+                        costCenterToEnable.IsDeleted = false;
+                        await this.dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return operationResult;
+        }
+
+        public async Task<CostCenterEditInputModel?> GetCostCenterForEditAsync(string? id)
+        {
+            CostCenterEditInputModel? model = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
+            {
+                Guid idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costCenterForEdit = await this.dbContext.CostCenters
+                        .FirstOrDefaultAsync(cc => cc.Id == idGuid);
+                    if (costCenterForEdit != null)
+                    {
+                        model = new CostCenterEditInputModel()
+                        {
+                            Id = costCenterForEdit.Id.ToString(),
+                            Description = costCenterForEdit.Description,
+                        };
+                    }
+                }
+            }
+
+            return model;
         }
 
         public async Task<IEnumerable<CostCenterIndexViewModel>> GetCostCentersAsync()

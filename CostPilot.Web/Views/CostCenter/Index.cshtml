@@ -40,8 +40,8 @@ else
                         <td>@costCenter.IsObsolete</td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@costCenter.Id" class="btn btn-sm btn-primary">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@costCenter.Id" class="btn btn-sm btn-danger">Make Obsolete</a>
-                            <a asp-action="Restore" asp-route-id="@costCenter.Id" class="btn btn-sm btn-light">Restore</a>
+                            <a asp-action="Disable" asp-route-id="@costCenter.Id" class="btn btn-sm btn-danger">Disable</a>
+                            <a asp-action="Enable" asp-route-id="@costCenter.Id" class="btn btn-sm btn-light">Enable</a>
                         </td>
                     </tr>
                 }

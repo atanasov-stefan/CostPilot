@@ -8,6 +8,12 @@ namespace CostPilot.Services.Core.Contracts
 
         public Task<bool> CreateCostCenterAsync(CostCenterCreateInputModel model);
 
-        public Task<bool> DeleteCostCenterAsync(string? id);
+        public Task<bool> DisableCostCenterAsync(string? id);
+
+        public Task<bool> EnableCostCenterAsync(string? id);
+
+        public Task<CostCenterEditInputModel?> GetCostCenterForEditAsync(string? id);
+
+        public Task<bool> EditCostCenterAsync(CostCenterEditInputModel model);
     }
 }
