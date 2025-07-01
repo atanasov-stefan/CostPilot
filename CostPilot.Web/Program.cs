@@ -32,6 +32,7 @@ namespace CostPilot.Web
                 .AddEntityFrameworkStores<CostPilotDbContext>();
 
             builder.Services.AddScoped<ICostCenterService, CostCenterService>();
+            builder.Services.AddScoped<ICostTypeService, CostTypeService>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

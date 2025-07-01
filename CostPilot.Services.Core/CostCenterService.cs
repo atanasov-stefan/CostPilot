@@ -19,7 +19,7 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostCenterAsync(CostCenterCreateInputModel model)
         {
             var operationResult = false;
-            if (this.dbContext.CostCenters.Any(cc => cc.Code == model.Code) == false)
+            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Code == model.Code) == false)
             {
                 var costCenter = new CostCenter()
                 {
@@ -30,7 +30,6 @@ namespace CostPilot.Services.Core
                 operationResult = true;
                 await this.dbContext.CostCenters.AddAsync(costCenter);
                 await this.dbContext.SaveChangesAsync();
-
             }
 
             return operationResult;
@@ -61,7 +60,7 @@ namespace CostPilot.Services.Core
         public async Task<bool> EditCostCenterAsync(CostCenterEditInputModel model)
         {
             var operationResult = false;
-            if (this.dbContext.CostCenters.Any(cc => cc.Description == model.Description) == false &&
+            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Description == model.Description) == false &&
                 this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
             {
                 Guid idGuid = Guid.Empty;

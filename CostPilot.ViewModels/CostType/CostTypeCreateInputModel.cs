@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using static CostPilot.Common.ValidationConstants.CostCenter;
+using static CostPilot.Common.ValidationConstants.CostType;
 using static CostPilot.Common.ValidationErrorMessages;
 
-namespace CostPilot.ViewModels.CostCenter
+namespace CostPilot.ViewModels.CostType
 {
-    public class CostCenterCreateInputModel
+    public class CostTypeCreateInputModel
     {
         [Required(ErrorMessage = RequireErrorMessage)]
         [StringLength(CodeMaxLength, MinimumLength = CodeMinLength, ErrorMessage = ExactLengthErrorMessage)]

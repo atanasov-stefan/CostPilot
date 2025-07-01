@@ -1,22 +1,22 @@
-﻿@using CostPilot.ViewModels.CostCenter
-@model IEnumerable<CostCenterIndexViewModel>
+﻿@using CostPilot.ViewModels.CostType
+@model IEnumerable<CostTypeIndexViewModel>
 
 @{
-    ViewData["Title"] = "Cost Centers";
+    ViewData["Title"] = "Cost Types";
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
 
 <p class="text-center">
-    <a asp-controller="CostCenter" asp-action="Create" class="btn btn-success">Create New Cost Center</a>
+    <a asp-controller="CostType" asp-action="Create" class="btn btn-success">Create New Cost Type</a>
 </p>
 <hr />
 
 @if (Model == null || Model.Any() == false)
 {
     <div class="text-center mt-5">
-        <h4>You don't have any cost centers assigned yet!</h4>
-        <p class="text-muted">Start creating and save your cost centers.</p>
+        <h4>You don't have any cost types assigned yet!</h4>
+        <p class="text-muted">Start creating and save your cost types.</p>
     </div>
 }
 else
@@ -32,16 +32,16 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var costCenter in Model)
+                @foreach (var costType in Model)
                 {
                     <tr>
-                        <td>@costCenter.Code</td>
-                        <td>@costCenter.Description</td>
-                        <td>@costCenter.IsObsolete</td>
+                        <td>@costType.Code</td>
+                        <td>@costType.Description</td>
+                        <td>@costType.IsObsolete</td>
                         <td>
-                            <a asp-controller="CostCenter" asp-action="Edit" asp-route-id="@costCenter.Id" class="btn btn-sm btn-primary">Edit</a>
-                            <a asp-controller ="CostCenter" asp-action="Disable" asp-route-id="@costCenter.Id" class="btn btn-sm btn-danger">Disable</a>
-                            <a asp-controller="CostCenter" asp-action="Enable" asp-route-id="@costCenter.Id" class="btn btn-sm btn-light">Enable</a>
+                            <a asp-controller="CostType" asp-action="Edit" asp-route-id="@costType.Id" class="btn btn-sm btn-primary">Edit</a>
+                            <a asp-controller="CostType" asp-action="Disable" asp-route-id="@costType.Id" class="btn btn-sm btn-danger">Disable</a>
+                            <a asp-controller="CostType" asp-action="Enable" asp-route-id="@costType.Id" class="btn btn-sm btn-light">Enable</a>
                         </td>
                     </tr>
                 }

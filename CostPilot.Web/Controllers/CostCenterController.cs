@@ -59,7 +59,7 @@ namespace CostPilot.Web.Controllers
                 var createResult = await this.costCenterService.CreateCostCenterAsync(model);
                 if (createResult == false)
                 {
-                    this.ModelState.AddModelError(string.Empty, CreateEditCostCenterOverallErrorMessage);
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
                     return this.View(model);
                 }
 
@@ -148,7 +148,7 @@ namespace CostPilot.Web.Controllers
                 var editResult = await this.costCenterService.EditCostCenterAsync(model);
                 if (editResult == false)
                 {
-                    this.ModelState.AddModelError(string.Empty, CreateEditCostCenterOverallErrorMessage);
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
                     return this.View(model);
                 }
 
@@ -159,11 +159,6 @@ namespace CostPilot.Web.Controllers
                 Console.WriteLine(e.Message);
                 return this.ExceptionCatchRedirect();
             }
-        }
-
-        private RedirectToActionResult ExceptionCatchRedirect()
-        { 
-            return this.RedirectToAction("Index", "Home");
         }
     }
 }

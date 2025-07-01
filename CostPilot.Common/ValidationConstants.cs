@@ -10,5 +10,13 @@ namespace CostPilot.Common
             public const int DescriptionMinLength = 2;
             public const int DescriptionMaxLength = 100;
         }
+
+        public static class CostType
+        {
+            public const int CodeMinLength = 2;
+            public const int CodeMaxLength = 2;
+            public const int DescriptionMinLength = 2;
+            public const int DescriptionMaxLength = 100;
+        }
     }
 }

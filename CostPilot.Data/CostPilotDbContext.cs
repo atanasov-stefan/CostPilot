@@ -16,6 +16,8 @@ namespace CostPilot.Data
 
         public DbSet<CostCenter> CostCenters { get; set; }
 
+        public DbSet<CostType> CostTypes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
