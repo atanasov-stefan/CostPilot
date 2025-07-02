@@ -40,7 +40,7 @@ namespace CostPilot.Services.Core
             var operationResult = false;
             if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
             {
-                Guid idGuid = Guid.Empty;
+                var idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costCenterToDisable = await this.dbContext.CostCenters
@@ -63,7 +63,7 @@ namespace CostPilot.Services.Core
             if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Description == model.Description) == false &&
                 this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
             {
-                Guid idGuid = Guid.Empty;
+                var idGuid = Guid.Empty;
                 if (Guid.TryParse(model.Id, out idGuid) == true)
                 {
                     var costCenterForEdit = await this.dbContext.CostCenters
@@ -85,7 +85,7 @@ namespace CostPilot.Services.Core
             var operationResult = false;
             if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
             {
-                Guid idGuid = Guid.Empty;
+                var idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costCenterToEnable = await this.dbContext.CostCenters
@@ -107,7 +107,7 @@ namespace CostPilot.Services.Core
             CostCenterEditInputModel? model = null;
             if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
             {
-                Guid idGuid = Guid.Empty;
+                var idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costCenterForEdit = await this.dbContext.CostCenters

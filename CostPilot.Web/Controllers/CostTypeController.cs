@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostType;
 using static CostPilot.Common.ValidationErrorMessages;
+using static CostPilot.Common.ApplicationConstants;
 
 namespace CostPilot.Web.Controllers
 {
@@ -58,6 +59,95 @@ namespace CostPilot.Web.Controllers
 
                 var createResult = await this.costTypeService.CreateCostTypeAsync(model);
                 if (createResult == false)
+                {
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    return this.View(model);
+                }
+
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Disable(string? id)
+        {
+            try
+            {
+                var disableResult = await this.costTypeService.DisableCostTypeAsync(id);
+                if (disableResult == false) 
+                {
+                    //TODO: Recheck
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Enable(string? id)
+        {
+            try
+            {
+                var enableResult = await this.costTypeService.EnableCostTypeAsync(id);
+                if (enableResult == false)
+                {
+                    //TODO: Recheck
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            try
+            {
+                var model = await this.costTypeService.GetCostTypeForEditAsync(id);
+                if (model == null)
+                {
+                    //TODO: Recheck
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CostTypeEditInputModel model)
+        {
+            try
+            {
+                if (this.ModelState.IsValid == false)
+                {
+                    return this.View(model);
+                }
+
+                var editResult = await costTypeService.EditCostTypeAsync(model);
+                if (editResult == false)
                 {
                     this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
                     return this.View(model);
