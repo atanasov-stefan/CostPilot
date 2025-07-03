@@ -18,7 +18,7 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostTypeAsync(CostTypeCreateInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Code == model.Code) == false)
+            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Code.ToLower() == model.Code.ToLower()) == false)
             {
                 var costType = new CostType()
                 {
@@ -59,7 +59,7 @@ namespace CostPilot.Services.Core
         public async Task<bool> EditCostTypeAsync(CostTypeEditInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Description == model.Description) == false &&
+            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Description.ToLower() == model.Description.ToLower()) == false &&
                 this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
             {
                 var idGuid = Guid.Empty;

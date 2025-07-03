@@ -14,9 +14,11 @@ namespace CostPilot.Data
         {
         }
 
-        public DbSet<CostCenter> CostCenters { get; set; }
+        public virtual DbSet<CostCenter> CostCenters { get; set; }
 
-        public DbSet<CostType> CostTypes { get; set; }
+        public virtual DbSet<CostType> CostTypes { get; set; }
+
+        public virtual DbSet<CostStatus> CostStatuses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

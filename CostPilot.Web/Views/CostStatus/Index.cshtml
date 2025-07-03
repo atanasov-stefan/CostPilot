@@ -1,0 +1,49 @@
+﻿@using CostPilot.ViewModels.CostStatus
+@model IEnumerable<CostStatusIndexViewModel>
+
+@{
+    ViewData["Title"] = "Cost Statuses";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<p class="text-center">
+    <a asp-controller="CostStatus" asp-action="Create" class="btn btn-success">Create New Cost Status</a>
+</p>
+<hr />
+
+@if (Model == null || Model.Any() == false)
+{
+    <div class="text-center mt-5">
+        <h4>You don't have any cost statuses assigned yet!</h4>
+        <p class="text-muted">Start creating and save your cost statuses.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Description</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Obsolete</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var costStatus in Model)
+                {
+                    <tr>
+                        <td>@costStatus.Description</td>
+                        <td>@costStatus.IsObsolete</td>
+                        <td>
+                            <a asp-controller="CostStatus" asp-action="Edit" asp-route-id="@costStatus.Id" class="btn btn-sm btn-primary">Edit</a>
+                            <a asp-controller="CostStatus" asp-action="Disable" asp-route-id="@costStatus.Id" class="btn btn-sm btn-danger">Disable</a>
+                            <a asp-controller="CostStatus" asp-action="Enable" asp-route-id="@costStatus.Id" class="btn btn-sm btn-light">Enable</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

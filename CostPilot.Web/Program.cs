@@ -33,6 +33,7 @@ namespace CostPilot.Web
 
             builder.Services.AddScoped<ICostCenterService, CostCenterService>();
             builder.Services.AddScoped<ICostTypeService, CostTypeService>();
+            builder.Services.AddScoped<ICostStatusService, CostStatusService>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
