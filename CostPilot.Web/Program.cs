@@ -1,4 +1,5 @@
 using CostPilot.Data;
+using CostPilot.Data.Models;
 using CostPilot.Services.Core;
 using CostPilot.Services.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -20,21 +21,25 @@ namespace CostPilot.Web
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequiredLength = 5;
+                options.Password.RequiredLength = 6;
             })
-                .AddEntityFrameworkStores<CostPilotDbContext>();
+                .AddEntityFrameworkStores<CostPilotDbContext>()
+                .AddUserManager<UserManager<ApplicationUser>>()
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<ICostCenterService, CostCenterService>();
             builder.Services.AddScoped<ICostTypeService, CostTypeService>();
             builder.Services.AddScoped<ICostStatusService, CostStatusService>();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 

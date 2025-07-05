@@ -7,7 +7,7 @@ using CostPilot.Data.Models;
 
 namespace CostPilot.Data
 {
-    public class CostPilotDbContext : IdentityDbContext
+    public class CostPilotDbContext : IdentityDbContext<ApplicationUser>
     {
         public CostPilotDbContext(DbContextOptions<CostPilotDbContext> options)
             : base(options)

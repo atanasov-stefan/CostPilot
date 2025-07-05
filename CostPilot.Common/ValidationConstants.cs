@@ -24,5 +24,11 @@ namespace CostPilot.Common
             public const int DescriptionMinLength = 2;
             public const int DescriptionMaxLength = 50;
         }
+
+        public static class ApplicationUser 
+        {
+            public const int NameMinLength = 2;
+            public const int NameMaxLength = 50;
+        }
     }
 }
