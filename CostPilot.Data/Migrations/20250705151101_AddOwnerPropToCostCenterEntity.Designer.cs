@@ -4,6 +4,7 @@ using CostPilot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CostPilot.Data.Migrations
 {
     [DbContext(typeof(CostPilotDbContext))]
-    partial class CostPilotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250705151101_AddOwnerPropToCostCenterEntity")]
+    partial class AddOwnerPropToCostCenterEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,7 +126,6 @@ namespace CostPilot.Data.Migrations
                         .HasComment("Cost Center IsDeleted Indicator");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasComment("Foreign Key Reference To Application User");
 
@@ -139,24 +141,21 @@ namespace CostPilot.Data.Migrations
                             Id = new Guid("28afb175-cbad-4f83-8a6c-54eba351497e"),
                             Code = "1000",
                             Description = "Human Resources",
-                            IsDeleted = false,
-                            OwnerId = "e977ec1a-c3ab-4915-9047-433a315cd635"
+                            IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("55cf3a59-c1f8-4d57-9d0c-d99c9b58f50e"),
                             Code = "1001",
                             Description = "Finance & Accounting",
-                            IsDeleted = false,
-                            OwnerId = "e977ec1a-c3ab-4915-9047-433a315cd635"
+                            IsDeleted = false
                         },
                         new
                         {
                             Id = new Guid("59376db9-4aa1-4aa2-aabf-fad94933df13"),
                             Code = "1002",
                             Description = "Marketing",
-                            IsDeleted = false,
-                            OwnerId = "e977ec1a-c3ab-4915-9047-433a315cd635"
+                            IsDeleted = false
                         });
                 });
 
@@ -391,8 +390,7 @@ namespace CostPilot.Data.Migrations
                     b.HasOne("CostPilot.Data.Models.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Owner");
                 });

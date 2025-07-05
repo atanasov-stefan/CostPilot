@@ -4,27 +4,33 @@ using CostPilot.Data;
 using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostCenter;
 using CostPilot.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CostPilot.Services.Core
 {
     public class CostCenterService : ICostCenterService
     {
         private readonly CostPilotDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CostCenterService(CostPilotDbContext dbContext)
+        public CostCenterService(CostPilotDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
             this.dbContext = dbContext;
+            this.userManager = userManager;
         }
 
         public async Task<bool> CreateCostCenterAsync(CostCenterCreateInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Code.ToLower() == model.Code.ToLower()) == false)
+            var owner = await this.userManager.FindByIdAsync(model.OwnerId);
+            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Code.ToLower() == model.Code.ToLower()) == false && 
+                owner != null)
             {
                 var costCenter = new CostCenter()
                 {
                     Code = model.Code,
                     Description = model.Description,
+                    OwnerId = model.OwnerId,
                 };
 
                 operationResult = true;
@@ -136,7 +142,8 @@ namespace CostPilot.Services.Core
                     Id = cc.Id.ToString(),
                     Code = cc.Code,
                     Description = cc.Description,
-                    IsObsolete = cc.IsDeleted == true ? "Yes" : "No"
+                    IsObsolete = cc.IsDeleted == true ? "Yes" : "No",
+                    Owner = $"{cc.Owner.FirstName} {cc.Owner.LastName}"
                 })
                 .ToListAsync();
 

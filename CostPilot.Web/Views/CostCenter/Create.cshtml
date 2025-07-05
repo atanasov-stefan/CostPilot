@@ -26,6 +26,14 @@
             </div>
 
             <div class="mb-2">
+                <label asp-for="@Model.OwnerId" class="form-label-add-edit">Owner</label>
+                <select asp-for="@Model.OwnerId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Owners, "Id", "FullName"))">
+                    <option value="">...</option>
+                </select>
+                <span asp-validation-for="@Model.OwnerId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
                 <button class="btn btn-success btn-dark-text w-100 py-2 fw-bold rounded" type="submit">
                     <i class="fas fa-save"></i> Save
                 </button>

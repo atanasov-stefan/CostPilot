@@ -27,6 +27,7 @@ else
                 <tr>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Code</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Description</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Owner</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Obsolete</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
                 </tr>
@@ -37,6 +38,7 @@ else
                     <tr>
                         <td>@costCenter.Code</td>
                         <td>@costCenter.Description</td>
+                        <td>@costCenter.Owner</td>
                         <td>@costCenter.IsObsolete</td>
                         <td>
                             <a asp-controller="CostCenter" asp-action="Edit" asp-route-id="@costCenter.Id" class="btn btn-sm btn-primary">Edit</a>

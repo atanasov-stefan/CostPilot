@@ -10,5 +10,7 @@ namespace CostPilot.ViewModels.CostCenter
         public string Description { get; set; } = null!;
 
         public string IsObsolete { get; set; } = null!;
+
+        public string Owner { get; set; } = null!;
     }
 }

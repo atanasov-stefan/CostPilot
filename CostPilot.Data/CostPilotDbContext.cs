@@ -1,9 +1,8 @@
-﻿using System.Reflection;
-
+﻿using CostPilot.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
-using CostPilot.Data.Models;
+using System.Reflection;
 
 namespace CostPilot.Data
 {

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 using static CostPilot.Common.ValidationConstants.CostCenter;
@@ -25,5 +25,12 @@ namespace CostPilot.Data.Models
         [Required]
         [Comment("Cost Center IsDeleted Indicator")]
         public bool IsDeleted { get; set; } = false;
+
+        [Required]
+        [Comment("Foreign Key Reference To Application User")]
+        public string OwnerId { get; set; } = null!;
+
+        [ForeignKey(nameof(OwnerId))]
+        public virtual ApplicationUser Owner { get; set; } = null!;
     }
 }

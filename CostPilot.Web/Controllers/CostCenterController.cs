@@ -4,16 +4,19 @@ using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostCenter;
 using static CostPilot.Common.ApplicationConstants;
 using static CostPilot.Common.ValidationErrorMessages;
+using Humanizer.DateTimeHumanizeStrategy;
 
 namespace CostPilot.Web.Controllers
 {
     public class CostCenterController : BaseController
     {
         private readonly ICostCenterService costCenterService;
+        private readonly IUserService userService;
 
-        public CostCenterController(ICostCenterService costCenterService)
+        public CostCenterController(ICostCenterService costCenterService, IUserService userService)
         {
             this.costCenterService = costCenterService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -36,7 +39,10 @@ namespace CostPilot.Web.Controllers
         {
             try
             {
-                return this.View();
+                var model = new CostCenterCreateInputModel();
+                model.Owners = await this.userService.GetUserDetailsAsync();
+                
+                return this.View(model);
             }
             catch (Exception e)
             {
@@ -53,6 +59,7 @@ namespace CostPilot.Web.Controllers
             {
                 if (this.ModelState.IsValid == false)
                 {
+                    model.Owners = await this.userService.GetUserDetailsAsync();
                     return this.View(model);
                 }
 
@@ -60,6 +67,7 @@ namespace CostPilot.Web.Controllers
                 if (createResult == false)
                 {
                     this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    model.Owners = await this.userService.GetUserDetailsAsync();
                     return this.View(model);
                 }
 
