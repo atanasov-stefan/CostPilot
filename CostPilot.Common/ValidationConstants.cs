@@ -1,4 +1,6 @@
 ﻿
+using System.Data;
+
 namespace CostPilot.Common
 {
     public static class ValidationConstants
@@ -29,6 +31,20 @@ namespace CostPilot.Common
         {
             public const int NameMinLength = 2;
             public const int NameMaxLength = 50;
+        }
+
+        public static class CostCurrency
+        { 
+            public const int CodeMinLength = 3;
+            public const int CodeMaxLength = 3;
+        }
+
+        public static class CostRequest 
+        {
+            public const int BriefDescriptionMinLength = 2;
+            public const int BriefDescriptionMaxLength = 50;
+            public const int DetailedDescriptionMinLength = 2;
+            public const int DetailedDescriptionMaxLength = 500;
         }
     }
 }

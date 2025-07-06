@@ -39,6 +39,7 @@ namespace CostPilot.Web
             builder.Services.AddScoped<ICostTypeService, CostTypeService>();
             builder.Services.AddScoped<ICostStatusService, CostStatusService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICostCurrencyService, CostCurrencyService>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 

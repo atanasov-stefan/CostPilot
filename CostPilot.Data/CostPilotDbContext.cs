@@ -1,8 +1,9 @@
-﻿using CostPilot.Data.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+
+using CostPilot.Data.Models;
 
 namespace CostPilot.Data
 {
@@ -18,6 +19,8 @@ namespace CostPilot.Data
         public virtual DbSet<CostType> CostTypes { get; set; }
 
         public virtual DbSet<CostStatus> CostStatuses { get; set; }
+
+        public virtual DbSet<CostCurrency> CostCurrencies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
