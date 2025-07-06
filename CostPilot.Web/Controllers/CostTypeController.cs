@@ -81,7 +81,7 @@ namespace CostPilot.Web.Controllers
                 var disableResult = await this.costTypeService.DisableCostTypeAsync(id);
                 if (disableResult == false) 
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 
@@ -102,7 +102,7 @@ namespace CostPilot.Web.Controllers
                 var enableResult = await this.costTypeService.EnableCostTypeAsync(id);
                 if (enableResult == false)
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 
@@ -123,7 +123,7 @@ namespace CostPilot.Web.Controllers
                 var model = await this.costTypeService.GetCostTypeForEditAsync(id);
                 if (model == null)
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 

@@ -22,8 +22,9 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostCenterAsync(CostCenterCreateInputModel model)
         {
             var operationResult = false;
+            var isCodeDuplicated = await this.dbContext.CostCenters.AnyAsync(cc => cc.Code.ToLower() == model.Code.ToLower());
             var owner = await this.userManager.FindByIdAsync(model.OwnerId);
-            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Code.ToLower() == model.Code.ToLower()) == false && 
+            if (isCodeDuplicated == false &&
                 owner != null)
             {
                 var costCenter = new CostCenter()
@@ -66,18 +67,22 @@ namespace CostPilot.Services.Core
         public async Task<bool> EditCostCenterAsync(CostCenterEditInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostCenters.AnyAsync(cc => cc.Description.ToLower() == model.Description.ToLower()) == false &&
-                this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
+            var owner = await this.userManager.FindByIdAsync(model.OwnerId);
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false &&
+                owner != null)
             {
                 var idGuid = Guid.Empty;
                 if (Guid.TryParse(model.Id, out idGuid) == true)
                 {
                     var costCenterForEdit = await this.dbContext.CostCenters
                     .FirstOrDefaultAsync(cc => cc.Id == idGuid);
-                    if (costCenterForEdit != null)
+                    var isDescriptionDuplicated = await this.dbContext.CostCenters.AnyAsync(cc => cc.Description.ToLower() == model.Description.ToLower() && cc.Id != idGuid);
+                    if (costCenterForEdit != null &&
+                        isDescriptionDuplicated == false)
                     {
                         operationResult = true;
                         costCenterForEdit.Description = model.Description;
+                        costCenterForEdit.OwnerId = model.OwnerId;
                         await this.dbContext.SaveChangesAsync();
                     }
                 }
@@ -124,6 +129,7 @@ namespace CostPilot.Services.Core
                         {
                             Id = costCenterForEdit.Id.ToString(),
                             Description = costCenterForEdit.Description,
+                            OwnerId = costCenterForEdit.OwnerId,
                         };
                     }
                 }

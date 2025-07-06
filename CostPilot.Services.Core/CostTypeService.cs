@@ -18,7 +18,8 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostTypeAsync(CostTypeCreateInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Code.ToLower() == model.Code.ToLower()) == false)
+            var isCodeDuplicated = await this.dbContext.CostTypes.AnyAsync(ct => ct.Code.ToLower() == model.Code.ToLower());
+            if (isCodeDuplicated == false)
             {
                 var costType = new CostType()
                 {
@@ -44,7 +45,7 @@ namespace CostPilot.Services.Core
                 {
                     var costTypeToDisable = await this.dbContext.CostTypes
                         .FirstOrDefaultAsync(ct => ct.Id == idGuid);
-                    if (costTypeToDisable != null) 
+                    if (costTypeToDisable != null)
                     {
                         operationResult = true;
                         costTypeToDisable.IsDeleted = true;
@@ -59,15 +60,16 @@ namespace CostPilot.Services.Core
         public async Task<bool> EditCostTypeAsync(CostTypeEditInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostTypes.AnyAsync(ct => ct.Description.ToLower() == model.Description.ToLower()) == false &&
-                this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
             {
                 var idGuid = Guid.Empty;
                 if (Guid.TryParse(model.Id, out idGuid) == true)
-                { 
+                {
                     var costTypeForEdit = await this.dbContext.CostTypes
                         .FirstOrDefaultAsync(ct => ct.Id == idGuid);
-                    if (costTypeForEdit != null)
+                    var isDescriptionDuplicated = await this.dbContext.CostTypes.AnyAsync(ct => ct.Description.ToLower() == model.Description.ToLower() && ct.Id != idGuid);
+                    if (costTypeForEdit != null &&
+                        isDescriptionDuplicated == false)
                     {
                         operationResult = true;
                         costTypeForEdit.Description = model.Description;
@@ -90,7 +92,7 @@ namespace CostPilot.Services.Core
                     var costTypeToEnable = await this.dbContext.CostTypes
                         .FirstOrDefaultAsync(ct => ct.Id == idGuid);
                     if (costTypeToEnable != null)
-                    { 
+                    {
                         operationResult = true;
                         costTypeToEnable.IsDeleted = false;
                         await this.dbContext.SaveChangesAsync();
@@ -113,8 +115,8 @@ namespace CostPilot.Services.Core
                         .FirstOrDefaultAsync(ct => ct.Id == idGuid);
                     if (costTypeForEdit != null)
                     {
-                        model = new CostTypeEditInputModel() 
-                        { 
+                        model = new CostTypeEditInputModel()
+                        {
                             Id = costTypeForEdit.Id.ToString(),
                             Description = costTypeForEdit.Description,
                         };

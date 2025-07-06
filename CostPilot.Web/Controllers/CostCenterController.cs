@@ -41,7 +41,6 @@ namespace CostPilot.Web.Controllers
             {
                 var model = new CostCenterCreateInputModel();
                 model.Owners = await this.userService.GetUserDetailsAsync();
-                
                 return this.View(model);
             }
             catch (Exception e)
@@ -88,7 +87,7 @@ namespace CostPilot.Web.Controllers
                 var disableResult = await this.costCenterService.DisableCostCenterAsync(id);
                 if (disableResult == false) 
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 
@@ -109,7 +108,7 @@ namespace CostPilot.Web.Controllers
                 var enableResult = await this.costCenterService.EnableCostCenterAsync(id);
                 if (enableResult == false)
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 
@@ -130,10 +129,11 @@ namespace CostPilot.Web.Controllers
                 var model = await this.costCenterService.GetCostCenterForEditAsync(id);
                 if (model == null)
                 {
-                    //TODO: Recheck
+                    this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
 
+                model.Owners = await this.userService.GetUserDetailsAsync();
                 return this.View(model);
             }
             catch (Exception e)
@@ -150,6 +150,7 @@ namespace CostPilot.Web.Controllers
             {
                 if (this.ModelState.IsValid == false)
                 {
+                    model.Owners = await this.userService.GetUserDetailsAsync();
                     return this.View(model);
                 }
 
@@ -157,6 +158,7 @@ namespace CostPilot.Web.Controllers
                 if (editResult == false)
                 {
                     this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    model.Owners = await this.userService.GetUserDetailsAsync();
                     return this.View(model);
                 }
 

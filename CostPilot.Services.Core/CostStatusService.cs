@@ -19,9 +19,10 @@ namespace CostPilot.Services.Core
         public async Task<bool> CreateCostStatusAsync(CostStatusCreateInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostStatuses.AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower()) == false)
+            var isDescriptionDuplicated = await this.dbContext.CostStatuses.AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower());
+            if (isDescriptionDuplicated == false)
             {
-                var costStatus = new CostStatus() 
+                var costStatus = new CostStatus()
                 {
                     Description = model.Description,
                 };
@@ -44,7 +45,7 @@ namespace CostPilot.Services.Core
                 {
                     var costStatusToDisable = await this.dbContext.CostStatuses
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
-                    if (costStatusToDisable != null) 
+                    if (costStatusToDisable != null)
                     {
                         operationResult = true;
                         costStatusToDisable.IsDeleted = true;
@@ -59,15 +60,16 @@ namespace CostPilot.Services.Core
         public async Task<bool> EditCostStatusAsync(CostStatusEditInputModel model)
         {
             var operationResult = false;
-            if (await this.dbContext.CostStatuses.AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower()) == false &&
-                this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false)
             {
                 var idGuid = Guid.Empty;
                 if (Guid.TryParse(model.Id, out idGuid) == true)
                 {
                     var costStatusForEdit = await this.dbContext.CostStatuses
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
-                    if (costStatusForEdit != null)
+                    var isDescriptionDuplicated = await this.dbContext.CostStatuses.AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower() && cs.Id != idGuid);
+                    if (costStatusForEdit != null &&
+                        isDescriptionDuplicated == false)
                     {
                         operationResult = true;
                         costStatusForEdit.Description = model.Description;
@@ -90,7 +92,7 @@ namespace CostPilot.Services.Core
                     var costStatusToEnable = await this.dbContext.CostStatuses
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
                     if (costStatusToEnable != null)
-                    { 
+                    {
                         operationResult = true;
                         costStatusToEnable.IsDeleted = false;
                         await this.dbContext.SaveChangesAsync();
@@ -106,7 +108,7 @@ namespace CostPilot.Services.Core
             var costStatuses = await this.dbContext.CostStatuses
                 .AsNoTracking()
                 .OrderBy(cs => cs.Description)
-                .Select(cs => new CostStatusIndexViewModel() 
+                .Select(cs => new CostStatusIndexViewModel()
                 {
                     Id = cs.Id.ToString(),
                     Description = cs.Description,
@@ -124,13 +126,13 @@ namespace CostPilot.Services.Core
             {
                 var idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
-                { 
+                {
                     var costStatusForEdit = await this.dbContext.CostStatuses
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
                     if (costStatusForEdit != null)
                     {
-                        model = new CostStatusEditInputModel() 
-                        { 
+                        model = new CostStatusEditInputModel()
+                        {
                             Id = costStatusForEdit.Id.ToString(),
                             Description = costStatusForEdit.Description,
                         };
