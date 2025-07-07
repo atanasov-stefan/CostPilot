@@ -67,7 +67,8 @@ namespace CostPilot.Services.Core
                 {
                     var costStatusForEdit = await this.dbContext.CostStatuses
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
-                    var isDescriptionDuplicated = await this.dbContext.CostStatuses.AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower() && cs.Id != idGuid);
+                    var isDescriptionDuplicated = await this.dbContext.CostStatuses
+                        .AnyAsync(cs => cs.Description.ToLower() == model.Description.ToLower() && cs.Id != idGuid);
                     if (costStatusForEdit != null &&
                         isDescriptionDuplicated == false)
                     {

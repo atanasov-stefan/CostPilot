@@ -4,7 +4,7 @@ An ASP.NET MVC application that streamlines the cost approval process for organi
 ## Planned Features
 - User authentication and role management
 - Submit, view, and track cost requests
-- Single-level approval workflows
+- Single-level approval workflow
 
 ## Tech Stack
 - ASP.NET MVC

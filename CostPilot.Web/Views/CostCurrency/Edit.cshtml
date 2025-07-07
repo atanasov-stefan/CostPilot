@@ -1,8 +1,8 @@
 ﻿@using CostPilot.ViewModels.CostCurrency
-@model CostCurrencyCreateInputModel
+@model CostCurrencyEditInputModel
 
 @{
-    ViewData["Title"] = "Create New Cost Currency";
+    ViewData["Title"] = "Edit Cost Currency";
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
@@ -12,7 +12,9 @@
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form asp-controller="CostCurrency" asp-action="Create" method="post">
+        <form asp-controller="CostCurrency" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="@Model.Id" />
+
             <div class="mb-2">
                 <label asp-for="@Model.Code" class="form-label-add-edit">Code</label>
                 <input asp-for="@Model.Code" class="form-control" aria-required="true" placeholder="Please enter cost currency code" />
@@ -21,7 +23,7 @@
 
             <div class="mb-2">
                 <button class="btn btn-success btn-dark-text w-100 py-2 fw-bold rounded" type="submit">
-                    <i class="fas fa-save"></i> Save
+                    <i class="fas fa-save"></i> Update
                 </button>
             </div>
         </form>
