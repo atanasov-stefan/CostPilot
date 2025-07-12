@@ -41,6 +41,8 @@ namespace CostPilot.Common
 
         public static class CostRequest 
         {
+            public const int NumberMaxLength = 10;
+            public const int CommentMaxLength = 500;
             public const int BriefDescriptionMinLength = 2;
             public const int BriefDescriptionMaxLength = 50;
             public const int DetailedDescriptionMinLength = 2;

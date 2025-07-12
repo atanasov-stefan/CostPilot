@@ -22,6 +22,8 @@ namespace CostPilot.Data
 
         public virtual DbSet<CostCurrency> CostCurrencies { get; set; }
 
+        public virtual DbSet<CostRequest> CostRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

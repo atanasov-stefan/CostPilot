@@ -32,5 +32,7 @@ namespace CostPilot.Data.Models
 
         [ForeignKey(nameof(OwnerId))]
         public virtual ApplicationUser Owner { get; set; } = null!;
+
+        public virtual ICollection<CostRequest> CostRequests { get; set; } = new HashSet<CostRequest>();
     }
 }

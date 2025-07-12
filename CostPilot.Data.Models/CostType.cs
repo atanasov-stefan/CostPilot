@@ -25,5 +25,7 @@ namespace CostPilot.Data.Models
         [Required]
         [Comment("Cost Type IsDeleted Indicator")]
         public bool IsDeleted { get; set; } = false;
+
+        public virtual ICollection<CostRequest> CostRequests { get; set; } = new HashSet<CostRequest>();
     }
 }
