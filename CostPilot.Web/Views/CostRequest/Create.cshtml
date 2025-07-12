@@ -1,0 +1,73 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model CostRequestCreateInputModel
+
+@{
+    ViewData["Title"] = "Create New Cost Request";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger text-center"></div>
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-controller="CostRequest" asp-action="Create" method="post">
+            <div class="row">
+                <div class="col-sm-6 mb-2">
+                    <label asp-for="@Model.Amount" class="form-label-add-edit">Amount</label>
+                    <input asp-for="@Model.Amount" type="number" step="0.01" min="0" class="form-control" aria-required="true" placeholder="0.00" />
+                    <span asp-validation-for="@Model.Amount" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-6 mb-2">
+                    <label asp-for="@Model.CurrencyId" class="form-label-add-edit">Currency</label>
+                    <select asp-for="@Model.CurrencyId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Currencies, "Id", "Code"))">
+                        <option value="">...</option>
+                    </select>
+                    <span asp-validation-for="@Model.CurrencyId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="@Model.TypeId" class="form-label-add-edit">Cost Type</label>
+                <select asp-for="@Model.TypeId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Types, "Id", "Description"))">
+                    <option value="">...</option>
+                </select>
+                <span asp-validation-for="@Model.TypeId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="@Model.CenterId" class="form-label-add-edit">Cost Center</label>
+                <select asp-for="@Model.CenterId" class="form-control" aria-required="true" asp-items="@(new SelectList(Model.Centers, "Id", "CodeDescription"))">
+                    <option value="">...</option>
+                </select>
+                <span asp-validation-for="@Model.CenterId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="@Model.BriefDescription" class="form-label-add-edit">Brief Description</label>
+                <textarea asp-for="@Model.BriefDescription" class="form-control" aria-required="true" rows="2" placeholder="Please enter cost request brief description"></textarea>
+                <span asp-validation-for="@Model.BriefDescription" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="@Model.DetailedDescription" class="form-label-add-edit">Detailed Description</label>
+                <textarea asp-for="@Model.DetailedDescription" class="form-control" aria-required="true" rows="3" placeholder="Please enter cost request detailed description"></textarea>
+                <span asp-validation-for="@Model.DetailedDescription" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
+                <button class="btn btn-success btn-dark-text w-100 py-2 fw-bold rounded" type="submit">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </form>
+
+        <div class="mb-2">
+            <a asp-controller="CostRequest" asp-action="Index" class="btn btn-secondary btn-dark-text w-100 py-2 fw-bold rounded">
+                <i class="fa-solid fa-xmark"></i> Cancel
+            </a>
+        </div>
+    </div>
+</div>

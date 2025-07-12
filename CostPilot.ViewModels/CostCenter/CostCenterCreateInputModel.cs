@@ -16,7 +16,7 @@ namespace CostPilot.ViewModels.CostCenter
         [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength, ErrorMessage = BetweenLengthErrorMessage)]
         public string Description { get; set; } = null!;
 
-        [Required(ErrorMessage = RequireErrorMessage)]
+        [Required(ErrorMessage = OwnerRequireErrorMessage)]
         public string OwnerId { get; set; } = null!;
 
         public IEnumerable<UserDetailsViewModel> Owners { get; set; } = new List<UserDetailsViewModel>();

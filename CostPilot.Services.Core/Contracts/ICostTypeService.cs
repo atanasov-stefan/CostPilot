@@ -15,5 +15,7 @@ namespace CostPilot.Services.Core.Contracts
         public Task<CostTypeEditInputModel?> GetCostTypeForEditAsync(string? id);
 
         public Task<bool> EditCostTypeAsync(CostTypeEditInputModel model);
+
+        public Task<IEnumerable<CostTypeDetailsViewModel>> GetActiveCostTypesAsync();
     }
 }

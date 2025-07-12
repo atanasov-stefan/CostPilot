@@ -1,0 +1,65 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model IEnumerable<CostRequestIndexViewModel>
+
+@{
+    ViewData["Title"] = "My Cost Requests";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<p class="text-center">
+    <a asp-controller="CostRequest" asp-action="Create" class="btn btn-success">Create New Cost Request</a>
+</p>
+<hr />
+
+@if (Model == null || Model.Any() == false)
+{
+    <div class="text-center mt-5">
+        <h4>You don't have any cost requests submitted yet!</h4>
+        <p class="text-muted">Start creating and save your cost requests.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Number</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Submitted On</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Amount</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Currency</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Status</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Approver</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var costRequest in Model)
+                {
+                    <tr>
+                        <td>@costRequest.Number</td>
+                        <td>@costRequest.SubmittedOn</td>
+                        <td>@costRequest.Amount</td>
+                        <td>@costRequest.Currency</td>
+                        <td>@costRequest.Status</td>
+                        <td>@costRequest.ApproverFullName</td>
+                        @if (costRequest.IsApprovedOrRejected == true)
+                        {
+                            <td>
+                                <a asp-controller="CostRequest" asp-action="Details" asp-route-id="@costRequest.Id" class="btn btn-sm btn-light">Details</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a asp-controller="CostRequest" asp-action="Edit" asp-route-id="@costRequest.Id" class="btn btn-sm btn-primary">Edit</a>
+                                <a asp-controller="CostRequest" asp-action="Cancel" asp-route-id="@costRequest.Id" class="btn btn-sm btn-danger">Cancel</a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -15,5 +15,7 @@ namespace CostPilot.Services.Core.Contracts
         public Task<CostCenterEditInputModel?> GetCostCenterForEditAsync(string? id);
 
         public Task<bool> EditCostCenterAsync(CostCenterEditInputModel model);
+
+        public Task<IEnumerable<CostCenterDetailsViewModel>> GetActiveCostCentersAsync();
     }
 }

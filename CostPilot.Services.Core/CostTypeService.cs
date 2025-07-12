@@ -103,6 +103,22 @@ namespace CostPilot.Services.Core
             return operationResult;
         }
 
+        public async Task<IEnumerable<CostTypeDetailsViewModel>> GetActiveCostTypesAsync()
+        {
+            var activeCostTypes = await this.dbContext.CostTypes
+                .AsNoTracking()
+                .Where(ct => ct.IsDeleted == false)
+                .OrderBy(ct => ct.Code)
+                .Select(ct => new CostTypeDetailsViewModel()
+                {
+                    Id = ct.Id.ToString(),
+                    Description = ct.Description,
+                })
+                .ToListAsync();
+
+            return activeCostTypes;
+        }
+
         public async Task<CostTypeEditInputModel?> GetCostTypeForEditAsync(string? id)
         {
             CostTypeEditInputModel? model = null;

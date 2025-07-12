@@ -15,5 +15,7 @@ namespace CostPilot.Services.Core.Contracts
         public Task<CostCurrencyEditInputModel?> GetCostCurrencyForEditAsync(string? id);
 
         public Task<bool> EditCostCurrencyAsync(CostCurrencyEditInputModel model);
+
+        public Task<IEnumerable<CostCurrencyDetailsViewModel>> GetActiveCostCurrenciesAsync();
     }
 }

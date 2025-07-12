@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 using CostPilot.Data;
 using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostCenter;
 using CostPilot.Data.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace CostPilot.Services.Core
 {
@@ -111,6 +111,22 @@ namespace CostPilot.Services.Core
             }
 
             return operationResult;
+        }
+
+        public async Task<IEnumerable<CostCenterDetailsViewModel>> GetActiveCostCentersAsync()
+        {
+            var activeCostCenters = await this.dbContext.CostCenters
+                .AsNoTracking()
+                .Where(cc => cc.IsDeleted == false)
+                .OrderBy(cc => cc.Code)
+                .Select(cc => new CostCenterDetailsViewModel()
+                {
+                    Id = cc.Id.ToString(),
+                    CodeDescription = $"{cc.Code} - {cc.Description}",
+                })
+                .ToListAsync();
+
+            return activeCostCenters;
         }
 
         public async Task<CostCenterEditInputModel?> GetCostCenterForEditAsync(string? id)

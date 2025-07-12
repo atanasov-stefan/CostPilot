@@ -103,6 +103,22 @@ namespace CostPilot.Services.Core
             return operationResult;
         }
 
+        public async Task<IEnumerable<CostCurrencyDetailsViewModel>> GetActiveCostCurrenciesAsync()
+        {
+            var activeCostCurrencies = await this.dbContext.CostCurrencies
+                .AsNoTracking()
+                .Where(cc => cc.IsDeleted == false)
+                .OrderBy(cc => cc.Code)
+                .Select(cc => new CostCurrencyDetailsViewModel() 
+                { 
+                    Id = cc.Id.ToString(),
+                    Code = cc.Code,
+                })
+                .ToListAsync();
+
+            return activeCostCurrencies;
+        }
+
         public async Task<IEnumerable<CostCurrencyIndexViewModel>> GetCostCurrenciesAsync()
         {
             var costCurrencies = await this.dbContext.CostCurrencies

@@ -4,5 +4,6 @@
     {
         public const int ReleaseYear = 2025;
         public const string PathToBadRequestView = "~/Views/Shared/BadRequest.cshtml";
+        public const string DateVisualisationFormat = "yyyy-MMM-dd";
     }
 }
