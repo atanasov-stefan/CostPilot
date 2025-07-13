@@ -17,6 +17,28 @@ namespace CostPilot.Services.Core
             this.dbContext = dbContext;
         }
 
+        public async Task<bool> CancelCostRequestAsync(string? id)
+        {
+            var operationResult = false;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costRequestToCancel = await this.dbContext.CostRequests
+                        .FirstOrDefaultAsync(cr => cr.Id == idGuid);
+                    if (costRequestToCancel != null) 
+                    {
+                        operationResult = true;
+                        costRequestToCancel.IsDeleted = true;
+                        await this.dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return operationResult;
+        }
+
         public async Task<bool> CreateCostRequestAsync(CostRequestCreateInputModel model, decimal costRequestAmount, string userId)
         {
             var operationResult = false;
@@ -26,12 +48,16 @@ namespace CostPilot.Services.Core
                 this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
             {
                 var costCurrency = await this.dbContext.CostCurrencies
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(cc => cc.IsDeleted == false && cc.Id.ToString().ToLower() == model.CurrencyId.ToLower());
                 var costType = await this.dbContext.CostTypes
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(ct => ct.IsDeleted == false && ct.Id.ToString().ToLower() == model.TypeId.ToLower());
                 var costCenter = await this.dbContext.CostCenters
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(cc => cc.IsDeleted == false && cc.Id.ToString().ToLower() == model.CenterId.ToLower());
                 var costStatusPending = await this.dbContext.CostStatuses
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "pending");
                 if (costCurrency != null &&
                     costType != null &&
@@ -63,6 +89,124 @@ namespace CostPilot.Services.Core
             }
 
             return operationResult;
+        }
+
+        public async Task<bool> EditCostRequestAsync(CostRequestEditInputModel model, decimal costRequestAmount, string userId)
+        {
+            var operationResult = false;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.CurrencyId) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(model.TypeId) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(model.CenterId) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                var costCurrency = await this.dbContext.CostCurrencies
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(cc => cc.IsDeleted == false && cc.Id.ToString().ToLower() == model.CurrencyId.ToLower());
+                var costType = await this.dbContext.CostTypes
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(ct => ct.IsDeleted == false && ct.Id.ToString().ToLower() == model.TypeId.ToLower());
+                var costCenter = await this.dbContext.CostCenters
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(cc => cc.IsDeleted == false && cc.Id.ToString().ToLower() == model.CenterId.ToLower());
+                var costRequestForEdit = await this.dbContext.CostRequests
+                    .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id.ToString().ToLower() == model.Id.ToLower() && cr.RequestorId.ToLower() == userId.ToLower());
+                if (costCurrency != null &&
+                    costType != null &&
+                    costCenter != null &&
+                    costRequestForEdit != null)
+                {
+                    var currentYear = DateTime.UtcNow.Year;
+                    var costRequestsCounter = await this.dbContext.CostRequests
+                        .CountAsync(cr => cr.SubmittedOn.Year == currentYear && cr.TypeId == costType.Id);
+                    
+                    costRequestForEdit.Number = $"{costType.Code}{currentYear}{(costRequestsCounter + 1):D4}";
+                    costRequestForEdit.Amount = costRequestAmount;
+                    costRequestForEdit.SubmittedOn = DateTime.UtcNow;
+                    costRequestForEdit.ApproverId = costCenter.OwnerId;
+                    costRequestForEdit.BriefDescription = model.BriefDescription;
+                    costRequestForEdit.DetailedDescription = model.DetailedDescription;
+                    costRequestForEdit.CenterId = costCenter.Id;
+                    costRequestForEdit.CurrencyId = costCurrency.Id;
+                    costRequestForEdit.TypeId = costType.Id;
+
+                    operationResult = true;
+                    await this.dbContext.SaveChangesAsync();
+                }
+            }
+
+            return operationResult;
+        }
+
+        public async Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id)
+        {
+            CostRequestDetailsViewModel? costRequestDetails = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costRequest = await this.dbContext.CostRequests
+                        .AsNoTracking()
+                        .Include(cr => cr.Approver)
+                        .Include(cr => cr.Center)
+                        .Include(cr => cr.Currency)
+                        .Include(cr => cr.Status)
+                        .Include(cr => cr.Type)
+                        .FirstOrDefaultAsync(cr => cr.Id == idGuid);
+                    if (costRequest != null)
+                    {
+                        costRequestDetails = new CostRequestDetailsViewModel()
+                        {
+                            Number = costRequest.Number,
+                            Amount = costRequest.Amount.ToString("F2"),
+                            SubmittedOn = costRequest.SubmittedOn.ToString(DateVisualisationFormat),
+                            DecisionOn = costRequest.DecisionOn != null ? costRequest.DecisionOn.Value.ToString(DateVisualisationFormat) : null,
+                            Approver = $"{costRequest.Approver.FirstName} {costRequest.Approver.LastName}",
+                            Comment = costRequest.Comment,
+                            BriefDescription = costRequest.BriefDescription,
+                            DetailedDescription = costRequest.DetailedDescription,
+                            Center = costRequest.Center.Description,
+                            Currency = costRequest.Currency.Code,
+                            Status = costRequest.Status.Description,
+                            Type = costRequest.Type.Description,
+                        };
+                    }
+                }
+            }
+
+            return costRequestDetails;
+        }
+
+        public async Task<CostRequestEditInputModel?> GetCostRequestForEditAsync(string? id, string userId)
+        {
+            CostRequestEditInputModel? model = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false && 
+                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costRequestForEdit = await this.dbContext.CostRequests
+                        .AsNoTracking()
+                        .Where(cr => cr.IsDeleted == false && cr.Id == idGuid)
+                        .FirstOrDefaultAsync();
+                    if (costRequestForEdit != null && costRequestForEdit.RequestorId.ToLower() == userId.ToLower())
+                    {
+                        model = new CostRequestEditInputModel() 
+                        {
+                            Id = costRequestForEdit.Id.ToString(),
+                            Amount = costRequestForEdit.Amount.ToString(),
+                            BriefDescription = costRequestForEdit.BriefDescription,
+                            DetailedDescription = costRequestForEdit.DetailedDescription,
+                            CenterId = costRequestForEdit.CenterId.ToString(),
+                            CurrencyId = costRequestForEdit.CurrencyId.ToString(),
+                            TypeId = costRequestForEdit.TypeId.ToString(),
+                        };
+                    }
+                }
+            }
+
+            return model;
         }
 
         public async Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId)

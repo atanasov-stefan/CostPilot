@@ -129,6 +129,7 @@ namespace CostPilot.Services.Core
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costStatusForEdit = await this.dbContext.CostStatuses
+                        .AsNoTracking()
                         .FirstOrDefaultAsync(cs => cs.Id == idGuid);
                     if (costStatusForEdit != null)
                     {

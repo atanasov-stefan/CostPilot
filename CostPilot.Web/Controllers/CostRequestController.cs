@@ -3,6 +3,7 @@
 using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostRequest;
 using static CostPilot.Common.ValidationErrorMessages;
+using static CostPilot.Common.ApplicationConstants;
 
 namespace CostPilot.Web.Controllers
 {
@@ -90,6 +91,113 @@ namespace CostPilot.Web.Controllers
                 var userId = this.GetUserId();
                 var model = await this.costRequestService.GetMyCostRequestsAsync(userId);
                 return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string? id)
+        {
+            try
+            {
+                var model = await this.costRequestService.GetCostRequestDetailsAsync(id);
+                if (model == null)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Cancel(string? id)
+        {
+            try
+            {
+                var cancelResult = await this.costRequestService.CancelCostRequestAsync(id);
+                if (cancelResult == false)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var model = await this.costRequestService.GetCostRequestForEditAsync(id, userId);
+                if (model == null)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                model.Centers = await this.costCenterService.GetActiveCostCentersAsync();
+                model.Currencies = await this.costCurrencyService.GetActiveCostCurrenciesAsync();
+                model.Types = await costTypeService.GetActiveCostTypesAsync();
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CostRequestEditInputModel model)
+        {
+            try
+            {
+                var costRequestAmount = 0.0m;
+                var isAmountValid = decimal.TryParse(model.Amount, out costRequestAmount) == true && costRequestAmount > 0.0m;
+                if (isAmountValid == false)
+                {
+                    this.ModelState.AddModelError(nameof(model.Amount), "Invalid Amount");
+                }
+
+                if (this.ModelState.IsValid == false)
+                {
+                    model.Centers = await this.costCenterService.GetActiveCostCentersAsync();
+                    model.Currencies = await this.costCurrencyService.GetActiveCostCurrenciesAsync();
+                    model.Types = await costTypeService.GetActiveCostTypesAsync();
+                    return this.View(model);
+                }
+
+                var userId = this.GetUserId();
+                var editResult = await this.costRequestService.EditCostRequestAsync(model, costRequestAmount, userId);
+                if (editResult == false)
+                {
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    model.Centers = await this.costCenterService.GetActiveCostCentersAsync();
+                    model.Currencies = await this.costCurrencyService.GetActiveCostCurrenciesAsync();
+                    model.Types = await costTypeService.GetActiveCostTypesAsync();
+                    return this.View(model);
+                }
+
+                return this.RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {

@@ -144,6 +144,7 @@ namespace CostPilot.Services.Core
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costCurrencyForEdit = await this.dbContext.CostCurrencies
+                        .AsNoTracking()
                         .FirstOrDefaultAsync(cc => cc.Id == idGuid);
                     if (costCurrencyForEdit != null)
                     {

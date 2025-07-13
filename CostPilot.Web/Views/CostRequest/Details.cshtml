@@ -1,0 +1,42 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model CostRequestDetailsViewModel
+
+@{
+    ViewData["Title"] = "Cost Request Details";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div class="row justify-content-center" style="margin: 0 auto; max-width: 800px;">
+    <div class="col-md-8">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Number - @Model.BriefDescription</h5>
+            <hr />
+            <p class="card-text">@Model.Amount @Model.Currency</p>
+            <hr />
+            <p class="card-text"><small class="text-muted">Detailed Description: @Model.DetailedDescription</small></p>
+            <p class="card-text"><small class="text-muted">Submitted: @Model.SubmittedOn</small></p>
+            <p class="card-text"><small class="text-muted">Cost Center: @Model.Center</small></p>
+            <p class="card-text"><small class="text-muted">Cost Type: @Model.Type</small></p>
+            <p class="card-text"><small class="text-muted">Cost Status: @Model.Status</small></p>
+            <p class="card-text"><small class="text-muted">Approver: @Model.Approver</small></p>
+            @if (Model.DecisionOn != null)
+            {
+                <p class="card-text"><small class="text-muted">Decision: @Model.DecisionOn</small></p>
+                @if (Model.Comment != null)
+                {
+                    <p class="card-text"><small class="text-muted">Approver's comment: @Model.Comment</small></p>
+                }
+            }
+            <hr />
+        </div>
+        <div class="card-footer text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-secondary d-flex justify-content-center align-items-center flex-fill mx-1" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
