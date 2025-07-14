@@ -8,9 +8,9 @@ namespace CostPilot.Services.Core.Contracts
 
         public Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId);
 
-        public Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id);
+        public Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id, string userId);
 
-        public Task<bool> CancelCostRequestAsync(string? id);
+        public Task<bool> CancelCostRequestAsync(string? id, string userId);
 
         public Task<CostRequestEditInputModel?> GetCostRequestForEditAsync(string? id, string userId);
 

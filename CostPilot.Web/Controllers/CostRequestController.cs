@@ -104,7 +104,8 @@ namespace CostPilot.Web.Controllers
         {
             try
             {
-                var model = await this.costRequestService.GetCostRequestDetailsAsync(id);
+                var userId = this.GetUserId();
+                var model = await this.costRequestService.GetCostRequestDetailsAsync(id, userId);
                 if (model == null)
                 {
                     this.Response.StatusCode = 400;
@@ -125,7 +126,8 @@ namespace CostPilot.Web.Controllers
         {
             try
             {
-                var cancelResult = await this.costRequestService.CancelCostRequestAsync(id);
+                var userId = this.GetUserId();
+                var cancelResult = await this.costRequestService.CancelCostRequestAsync(id, userId);
                 if (cancelResult == false)
                 {
                     this.Response.StatusCode = 400;
