@@ -15,5 +15,7 @@ namespace CostPilot.Services.Core.Contracts
         public Task<CostRequestEditInputModel?> GetCostRequestForEditAsync(string? id, string userId);
 
         public Task<bool> EditCostRequestAsync(CostRequestEditInputModel model, decimal costRequestAmount, string userId);
+
+        public Task<IEnumerable<CostRequestForApprovalViewModel>?> GetCostRequestsForApprovalAsync(string userId);
     }
 }

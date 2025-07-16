@@ -1,0 +1,50 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model IEnumerable<CostRequestForApprovalViewModel>
+
+@{
+    ViewData["Title"] = "Cost Requests For Approval";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+@if (Model == null || Model.Any() == false)
+{
+    <div class="text-center mt-5">
+        <h4>There are no cost requests submitted to you for approval</h4>
+    </div>
+}
+else
+{
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Number</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Submitted On</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Amount</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Currency</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Brief Description</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var costRequest in Model)
+                {
+                    <tr>
+                        <td>@costRequest.Number</td>
+                        <td>@costRequest.SubmittedOn</td>
+                        <td>@costRequest.Amount</td>
+                        <td>@costRequest.Currency</td>
+                        <td>@costRequest.BriefDescription</td>
+                        <td>
+                            <a asp-controller="CostRequest" asp-action="Details" asp-route-id="@costRequest.Id" class="btn btn-sm btn-light">Details</a>
+                            <a asp-controller="CostRequest" asp-action="Approve" asp-route-id="@costRequest.Id" class="btn btn-sm btn-success">Approve</a>
+                            <a asp-controller="CostRequest" asp-action="Reject" asp-route-id="@costRequest.Id" class="btn btn-sm btn-danger">Reject</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

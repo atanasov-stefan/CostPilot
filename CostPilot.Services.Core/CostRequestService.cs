@@ -259,6 +259,30 @@ namespace CostPilot.Services.Core
             return myCostRequests;
         }
 
+        public async Task<IEnumerable<CostRequestForApprovalViewModel>?> GetCostRequestsForApprovalAsync(string userId)
+        {
+            IEnumerable<CostRequestForApprovalViewModel>? costRequestsForApproval = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                costRequestsForApproval = await this.dbContext.CostRequests
+                    .AsNoTracking()
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower())
+                    .OrderByDescending(cr => cr.SubmittedOn)
+                    .Select(cr => new CostRequestForApprovalViewModel()
+                    {
+                        Id = cr.Id.ToString(),
+                        Number = cr.Number,
+                        SubmittedOn = cr.SubmittedOn.ToString(DateVisualisationFormat),
+                        Amount = cr.Amount.ToString("F2"),
+                        Currency = cr.Currency.Code,
+                        BriefDescription = cr.BriefDescription,
+                    })
+                    .ToListAsync();
+            }
+
+            return costRequestsForApproval;
+        }
+
         private bool IsIdNullOrEmptyOrWhiteSpace(string? id)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
