@@ -223,5 +223,93 @@ namespace CostPilot.Web.Controllers
                 return this.ExceptionCatchRedirect();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Approve(string? id)
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var model = await this.costRequestService.GetCostRequestForDecisionAsync(id, userId);
+                if (model == null)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmApprove(CostRequestDecisionInputModel model)
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var approveResult = await this.costRequestService.ApproveCostRequestAsync(model, userId);
+                if (approveResult == false)
+                {
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    return this.View(model);
+                }
+
+                return this.RedirectToAction(nameof(ForApproval));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Reject(string? id)
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var model = await this.costRequestService.GetCostRequestForDecisionAsync(id, userId);
+                if (model == null)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmReject(CostRequestDecisionInputModel model)
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var rejectResult = await this.costRequestService.RejectCostRequestAsync(model, userId);
+                if (rejectResult == false)
+                {
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    return this.View(model);
+                }
+
+                return this.RedirectToAction(nameof(ForApproval));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
     }
 }

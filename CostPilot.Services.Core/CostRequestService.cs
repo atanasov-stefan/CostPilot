@@ -266,7 +266,7 @@ namespace CostPilot.Services.Core
             {
                 costRequestsForApproval = await this.dbContext.CostRequests
                     .AsNoTracking()
-                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower())
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && cr.Status.Description.ToLower() == "pending")
                     .OrderByDescending(cr => cr.SubmittedOn)
                     .Select(cr => new CostRequestForApprovalViewModel()
                     {
@@ -281,6 +281,91 @@ namespace CostPilot.Services.Core
             }
 
             return costRequestsForApproval;
+        }
+
+        public async Task<CostRequestDecisionInputModel?> GetCostRequestForDecisionAsync(string? id, string userId)
+        {
+            CostRequestDecisionInputModel? model = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(id, out idGuid) == true)
+                {
+                    var costRequestForDecision = await this.dbContext.CostRequests
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == "pending" && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
+                    if (costRequestForDecision != null)
+                    {
+                        model = new CostRequestDecisionInputModel()
+                        {
+                            Id = costRequestForDecision.Id.ToString(),
+                            Number = costRequestForDecision.Number,
+                            Comment = costRequestForDecision.Comment,
+                        };
+                    }
+                }
+            }
+
+            return model;
+        }
+
+        public async Task<bool> ApproveCostRequestAsync(CostRequestDecisionInputModel model, string userId)
+        {
+            var operationResult = false;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(model.Id, out idGuid) == true)
+                {
+                    var costRequestToApprove = await this.dbContext.CostRequests
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
+                    var costStatusApproved = await this.dbContext.CostStatuses
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "approved");
+                    if (costRequestToApprove != null && 
+                        costStatusApproved != null)
+                    {
+                        costRequestToApprove.DecisionOn = DateTime.UtcNow;
+                        costRequestToApprove.StatusId = costStatusApproved.Id;
+                        costRequestToApprove.Comment = model.Comment;
+                        operationResult = true;
+                        await this.dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return operationResult;
+        }
+
+        public async Task<bool> RejectCostRequestAsync(CostRequestDecisionInputModel model, string userId)
+        {
+            var operationResult = false;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(model.Id) == false &&
+                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                var idGuid = Guid.Empty;
+                if (Guid.TryParse(model.Id, out idGuid) == true)
+                {
+                    var costRequestToReject = await this.dbContext.CostRequests
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
+                    var costStatusRejected = await this.dbContext.CostStatuses
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "rejected");
+                    if (costRequestToReject != null &&
+                        costStatusRejected != null)
+                    {
+                        costRequestToReject.DecisionOn = DateTime.UtcNow;
+                        costRequestToReject.StatusId = costStatusRejected.Id;
+                        costRequestToReject.Comment = model.Comment;
+                        operationResult = true;
+                        await this.dbContext.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return operationResult;
         }
 
         private bool IsIdNullOrEmptyOrWhiteSpace(string? id)

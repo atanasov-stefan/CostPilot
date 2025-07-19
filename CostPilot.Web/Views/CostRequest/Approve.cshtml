@@ -1,0 +1,36 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model CostRequestDecisionInputModel
+
+@{
+    ViewData["Title"] = "Approve Cost Request";
+}
+
+<h2 class="text-center">@ViewData["Title"] @Model.Number</h2>
+<hr />
+
+<div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger text-center"></div>
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-controller="CostRequest" asp-action="ConfirmApprove" method="post">
+            <input type="hidden" asp-for="@Model.Id" />
+
+            <div class="mb-2">
+                <label asp-for="@Model.Comment" class="form-label-add-edit">Comment</label>
+                <textarea asp-for="@Model.Comment" class="form-control" aria-required="true" rows="3"></textarea>
+            </div>
+
+            <div class="mb-2">
+                <button type="submit" class="btn btn-success btn-dark-text w-100 py-2 fw-bold rounded">
+                    <i class="fa-solid fa-thumbs-up"></i> Confirm Approve
+                </button>
+            </div>
+        </form>
+
+        <div class="mb-2">
+            <a asp-controller="CostRequest" asp-action="ForApproval" class="btn btn-secondary btn-dark-text w-100 py-2 fw-bold rounded">
+                <i class="fa-solid fa-xmark"></i> Cancel
+            </a>
+        </div>
+    </div>
+</div>
