@@ -1,8 +1,8 @@
 ﻿@using CostPilot.ViewModels.CostRequest
-@model IEnumerable<CostRequestForApprovalViewModel>
+@model IEnumerable<CostRequestAfterDecisionViewModel>
 
 @{
-    ViewData["Title"] = "Cost Requests For Approval";
+    ViewData["Title"] = "Approved/Rejected Cost Requests";
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
@@ -11,7 +11,7 @@
 @if (Model == null || Model.Any() == false)
 {
     <div class="text-center mt-5">
-        <h4>There are currently no cost requests submitted to you for approval</h4>
+        <h4>There are still no cost requests approved/rejected by you</h4>
     </div>
 }
 else
@@ -24,7 +24,7 @@ else
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Submitted On</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Amount</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Currency</th>
-                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Brief Description</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Status</th>
                     <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
                 </tr>
             </thead>
@@ -36,11 +36,9 @@ else
                         <td>@costRequest.SubmittedOn</td>
                         <td>@costRequest.Amount</td>
                         <td>@costRequest.Currency</td>
-                        <td>@costRequest.BriefDescription</td>
+                        <td>@costRequest.Status</td>
                         <td>
                             <a asp-controller="CostRequest" asp-action="Details" asp-route-id="@costRequest.Id" class="btn btn-sm btn-light">Details</a>
-                            <a asp-controller="CostRequest" asp-action="Approve" asp-route-id="@costRequest.Id" class="btn btn-sm btn-success">Approve</a>
-                            <a asp-controller="CostRequest" asp-action="Reject" asp-route-id="@costRequest.Id" class="btn btn-sm btn-danger">Reject</a>
                         </td>
                     </tr>
                 }

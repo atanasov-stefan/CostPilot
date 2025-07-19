@@ -27,7 +27,8 @@ namespace CostPilot.Services.Core
                 if (Guid.TryParse(id, out idGuid) == true)
                 {
                     var costRequestToCancel = await this.dbContext.CostRequests
-                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.RequestorId.ToLower() == userId.ToLower());
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == PendingStatusToLower &&
+                        cr.Id == idGuid && cr.RequestorId.ToLower() == userId.ToLower());
                     if (costRequestToCancel != null)
                     {
                         operationResult = true;
@@ -59,7 +60,7 @@ namespace CostPilot.Services.Core
                     .FirstOrDefaultAsync(cc => cc.IsDeleted == false && cc.Id.ToString().ToLower() == model.CenterId.ToLower());
                 var costStatusPending = await this.dbContext.CostStatuses
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "pending");
+                    .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == PendingStatusToLower);
                 if (costCurrency != null &&
                     costType != null &&
                     costCenter != null &&
@@ -177,6 +178,7 @@ namespace CostPilot.Services.Core
                         .Include(cr => cr.Currency)
                         .Include(cr => cr.Status)
                         .Include(cr => cr.Type)
+                        .Include(cr => cr.Requestor)
                         .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.RequestorId.ToLower() == userId.ToLower());
                     if (costRequest != null)
                     {
@@ -194,6 +196,7 @@ namespace CostPilot.Services.Core
                             Currency = costRequest.Currency.Code,
                             Status = costRequest.Status.Description,
                             Type = costRequest.Type.Description,
+                            Requestor = $"{costRequest.Requestor.FirstName} {costRequest.Requestor.LastName}",
                         };
                     }
                 }
@@ -266,7 +269,8 @@ namespace CostPilot.Services.Core
             {
                 costRequestsForApproval = await this.dbContext.CostRequests
                     .AsNoTracking()
-                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && cr.Status.Description.ToLower() == "pending")
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && 
+                    cr.Status.Description.ToLower() == PendingStatusToLower)
                     .OrderByDescending(cr => cr.SubmittedOn)
                     .Select(cr => new CostRequestForApprovalViewModel()
                     {
@@ -294,7 +298,8 @@ namespace CostPilot.Services.Core
                 {
                     var costRequestForDecision = await this.dbContext.CostRequests
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == "pending" && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == PendingStatusToLower 
+                        && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
                     if (costRequestForDecision != null)
                     {
                         model = new CostRequestDecisionInputModel()
@@ -323,7 +328,7 @@ namespace CostPilot.Services.Core
                         .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
                     var costStatusApproved = await this.dbContext.CostStatuses
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "approved");
+                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == ApprovedStatusToLower);
                     if (costRequestToApprove != null && 
                         costStatusApproved != null)
                     {
@@ -352,7 +357,7 @@ namespace CostPilot.Services.Core
                         .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
                     var costStatusRejected = await this.dbContext.CostStatuses
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == "rejected");
+                        .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == RejectedStatusToLower);
                     if (costRequestToReject != null &&
                         costStatusRejected != null)
                     {
@@ -366,6 +371,31 @@ namespace CostPilot.Services.Core
             }
 
             return operationResult;
+        }
+
+        public async Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId)
+        {
+            IEnumerable<CostRequestAfterDecisionViewModel>? costRequestsAfterDecision = null;
+            if (this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            {
+                costRequestsAfterDecision = await this.dbContext.CostRequests
+                    .AsNoTracking()
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && 
+                    (cr.Status.Description.ToLower() == ApprovedStatusToLower || cr.Status.Description.ToLower() == RejectedStatusToLower))
+                    .OrderByDescending(cr => cr.SubmittedOn)
+                    .Select(cr => new CostRequestAfterDecisionViewModel()
+                    {
+                        Id = cr.Id.ToString(),
+                        Number = cr.Number,
+                        SubmittedOn = cr.SubmittedOn.ToString(DateVisualisationFormat),
+                        Amount = cr.Amount.ToString("F2"),
+                        Currency = cr.Currency.Code,
+                        Status = cr.Status.Description,
+                    })
+                    .ToListAsync();
+            }
+
+            return costRequestsAfterDecision;
         }
 
         private bool IsIdNullOrEmptyOrWhiteSpace(string? id)

@@ -311,5 +311,21 @@ namespace CostPilot.Web.Controllers
                 return this.ExceptionCatchRedirect();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AfterDecision()
+        {
+            try
+            {
+                var userId = this.GetUserId();
+                var model = await this.costRequestService.GetCostRequestsAfterDecisionAsync(userId);
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
     }
 }

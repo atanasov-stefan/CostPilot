@@ -9,6 +9,8 @@ namespace CostPilot.ViewModels.CostRequest
 
         public string SubmittedOn { get; set; } = null!;
 
+        public string Requestor { get; set; } = null!;
+
         public string? DecisionOn { get; set; }
 
         public string Approver { get; set; } = null!;
