@@ -25,5 +25,7 @@ namespace CostPilot.Services.Core.Contracts
         public Task<bool> RejectCostRequestAsync(CostRequestDecisionInputModel model, string userId);
 
         public Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId, string? searchNumber, string? searchCurrency, string? searchStatus);
+
+        public Task<CostRequestDashboardViewModel> GetDashboardStatisticsAsync();
     }
 }

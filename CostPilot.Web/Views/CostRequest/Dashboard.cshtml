@@ -1,0 +1,111 @@
+﻿@using CostPilot.ViewModels.CostRequest
+@model CostRequestDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<h3>Total Submitted Requests</h3>
+<div class="row">
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Today</div>
+                <h4>@Model.TotalRequestsCurrentDay</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Month</div>
+                <h4>@Model.TotalRequestsCurrentMonth</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Year</div>
+                <h4>@Model.TotalRequestsCurrentYear</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Total Approved Requests</h3>
+<div class="row">
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Today</div>
+                <h4>@Model.TotalApprovedRequestsCurrentDay</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Month</div>
+                <h4>@Model.TotalApprovedRequestsCurrentMonth</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Year</div>
+                <h4>@Model.TotalApprovedRequestsCurrentYear</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Total Rejected Requests</h3>
+<div class="row">
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Today</div>
+                <h4>@Model.TotalRejectedRequestsCurrentDay</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Month</div>
+                <h4>@Model.TotalRejectedRequestsCurrentMonth</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Current Year</div>
+                <h4>@Model.TotalRejectedRequestsCurrentYear</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Average Response Time</h3>
+<div class="row">
+    <div class="col-md-4 mb-5">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <div class="card-title">Days</div>
+                <h4>@Model.AverageResponseTime</h4>
+            </div>
+        </div>
+    </div>
+</div>

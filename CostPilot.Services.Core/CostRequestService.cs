@@ -439,6 +439,40 @@ namespace CostPilot.Services.Core
             return costRequestsAfterDecision;
         }
 
+        public async Task<CostRequestDashboardViewModel> GetDashboardStatisticsAsync()
+        {
+            var allCostRequests = await this.dbContext.CostRequests
+                .AsNoTracking()
+                .Include(cr => cr.Status)
+                .Where(cr => cr.IsDeleted == false)
+                .ToListAsync();
+
+            var today = DateTime.UtcNow.Date;
+            var currentMonth = DateTime.UtcNow.Month;
+            var currentYear = DateTime.UtcNow.Year;
+            var dashboardStat = new CostRequestDashboardViewModel()
+            {
+                TotalRequestsCurrentDay = allCostRequests.Count(cr => cr.SubmittedOn.Date == today),
+                TotalRequestsCurrentMonth = allCostRequests.Count(cr => cr.SubmittedOn.Year == currentYear && cr.SubmittedOn.Month == currentMonth),
+                TotalRequestsCurrentYear = allCostRequests.Count(cr => cr.SubmittedOn.Year == currentYear),
+                TotalApprovedRequestsCurrentDay = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.Status.Description.ToLower() == ApprovedStatusToLower),
+                TotalApprovedRequestsCurrentMonth = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.Status.Description.ToLower() == ApprovedStatusToLower),
+                TotalApprovedRequestsCurrentYear = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.Status.Description.ToLower() == ApprovedStatusToLower),
+                TotalRejectedRequestsCurrentDay = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.Status.Description.ToLower() == RejectedStatusToLower),
+                TotalRejectedRequestsCurrentMonth = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.Status.Description.ToLower() == RejectedStatusToLower),
+                TotalRejectedRequestsCurrentYear = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.Status.Description.ToLower() == RejectedStatusToLower),
+                
+                AverageResponseTime = allCostRequests
+                .Where(cr => cr.DecisionOn.HasValue)
+                .Select(cr => (cr.DecisionOn!.Value - cr.SubmittedOn).TotalDays)
+                .Average()
+                .ToString("F2"),
+
+            };
+
+            return dashboardStat;
+        }
+
         private bool IsIdNullOrEmptyOrWhiteSpace(string? id)
         {
             if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))

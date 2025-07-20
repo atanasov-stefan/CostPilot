@@ -326,5 +326,20 @@ namespace CostPilot.Web.Controllers
                 return this.ExceptionCatchRedirect();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Dashboard()
+        {
+            try
+            {
+                var model = await this.costRequestService.GetDashboardStatisticsAsync();
+                return this.View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
     }
 }
