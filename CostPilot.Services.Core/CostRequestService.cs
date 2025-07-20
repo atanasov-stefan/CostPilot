@@ -162,11 +162,10 @@ namespace CostPilot.Services.Core
             return operationResult;
         }
 
-        public async Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id, string userId)
+        public async Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id)
         {
             CostRequestDetailsViewModel? costRequestDetails = null;
-            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false &&
-                this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
+            if (this.IsIdNullOrEmptyOrWhiteSpace(id) == false)
             {
                 var idGuid = Guid.Empty;
                 if (Guid.TryParse(id, out idGuid) == true)
@@ -179,7 +178,7 @@ namespace CostPilot.Services.Core
                         .Include(cr => cr.Status)
                         .Include(cr => cr.Type)
                         .Include(cr => cr.Requestor)
-                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid && cr.RequestorId.ToLower() == userId.ToLower());
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Id == idGuid);
                     if (costRequest != null)
                     {
                         costRequestDetails = new CostRequestDetailsViewModel()
@@ -236,7 +235,7 @@ namespace CostPilot.Services.Core
             return model;
         }
 
-        public async Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId)
+        public async Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId, string? searchNumber, string? searchCurrency, string? searchStatus)
         {
             IEnumerable<CostRequestIndexViewModel>? myCostRequests = null;
             if (this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
@@ -257,6 +256,27 @@ namespace CostPilot.Services.Core
                         IsApprovedOrRejected = cr.DecisionOn != null ? true : false,
                     })
                     .ToListAsync();
+
+                if (string.IsNullOrEmpty(searchNumber) == false &&
+                    string.IsNullOrWhiteSpace(searchNumber) == false)
+                {
+                    myCostRequests = myCostRequests
+                        .Where(cr => cr.Number.ToLower().Contains(searchNumber.ToLower()));
+                }
+
+                if (string.IsNullOrEmpty(searchCurrency) == false &&
+                    string.IsNullOrWhiteSpace(searchCurrency) == false)
+                {
+                    myCostRequests = myCostRequests
+                        .Where(cr => cr.Currency.ToLower().Contains(searchCurrency.ToLower()));
+                }
+
+                if (string.IsNullOrEmpty(searchStatus) == false &&
+                    string.IsNullOrWhiteSpace(searchStatus) == false)
+                {
+                    myCostRequests = myCostRequests
+                        .Where(cr => cr.Status.ToLower().Contains(searchStatus.ToLower()));
+                }
             }
 
             return myCostRequests;
@@ -269,7 +289,7 @@ namespace CostPilot.Services.Core
             {
                 costRequestsForApproval = await this.dbContext.CostRequests
                     .AsNoTracking()
-                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && 
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() &&
                     cr.Status.Description.ToLower() == PendingStatusToLower)
                     .OrderByDescending(cr => cr.SubmittedOn)
                     .Select(cr => new CostRequestForApprovalViewModel()
@@ -298,7 +318,7 @@ namespace CostPilot.Services.Core
                 {
                     var costRequestForDecision = await this.dbContext.CostRequests
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == PendingStatusToLower 
+                        .FirstOrDefaultAsync(cr => cr.IsDeleted == false && cr.Status.Description.ToLower() == PendingStatusToLower
                         && cr.Id == idGuid && cr.ApproverId.ToLower() == userId.ToLower());
                     if (costRequestForDecision != null)
                     {
@@ -329,7 +349,7 @@ namespace CostPilot.Services.Core
                     var costStatusApproved = await this.dbContext.CostStatuses
                         .AsNoTracking()
                         .FirstOrDefaultAsync(cs => cs.IsDeleted == false && cs.Description.ToLower() == ApprovedStatusToLower);
-                    if (costRequestToApprove != null && 
+                    if (costRequestToApprove != null &&
                         costStatusApproved != null)
                     {
                         costRequestToApprove.DecisionOn = DateTime.UtcNow;
@@ -373,14 +393,14 @@ namespace CostPilot.Services.Core
             return operationResult;
         }
 
-        public async Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId)
+        public async Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId, string? searchNumber, string? searchCurrency, string? searchStatus)
         {
             IEnumerable<CostRequestAfterDecisionViewModel>? costRequestsAfterDecision = null;
             if (this.IsIdNullOrEmptyOrWhiteSpace(userId) == false)
             {
                 costRequestsAfterDecision = await this.dbContext.CostRequests
                     .AsNoTracking()
-                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() && 
+                    .Where(cr => cr.IsDeleted == false && cr.ApproverId.ToLower() == userId.ToLower() &&
                     (cr.Status.Description.ToLower() == ApprovedStatusToLower || cr.Status.Description.ToLower() == RejectedStatusToLower))
                     .OrderByDescending(cr => cr.SubmittedOn)
                     .Select(cr => new CostRequestAfterDecisionViewModel()
@@ -393,6 +413,27 @@ namespace CostPilot.Services.Core
                         Status = cr.Status.Description,
                     })
                     .ToListAsync();
+
+                if (string.IsNullOrEmpty(searchNumber) == false &&
+                    string.IsNullOrWhiteSpace(searchNumber) == false)
+                {
+                    costRequestsAfterDecision = costRequestsAfterDecision
+                        .Where(cr => cr.Number.ToLower().Contains(searchNumber.ToLower()));
+                }
+
+                if (string.IsNullOrEmpty(searchCurrency) == false &&
+                    string.IsNullOrWhiteSpace(searchCurrency) == false)
+                {
+                    costRequestsAfterDecision = costRequestsAfterDecision
+                        .Where(cr => cr.Currency.ToLower().Contains(searchCurrency.ToLower()));
+                }
+
+                if (string.IsNullOrEmpty(searchStatus) == false &&
+                    string.IsNullOrWhiteSpace(searchStatus) == false)
+                {
+                    costRequestsAfterDecision = costRequestsAfterDecision
+                        .Where(cr => cr.Status.ToLower().Contains(searchStatus.ToLower()));
+                }
             }
 
             return costRequestsAfterDecision;

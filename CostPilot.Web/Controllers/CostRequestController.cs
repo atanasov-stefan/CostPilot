@@ -84,12 +84,12 @@ namespace CostPilot.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchNumber, string? searchCurrency, string? searchStatus)
         {
             try
             {
                 var userId = this.GetUserId();
-                var model = await this.costRequestService.GetMyCostRequestsAsync(userId);
+                var model = await this.costRequestService.GetMyCostRequestsAsync(userId, searchNumber, searchCurrency, searchStatus);
                 return this.View(model);
             }
             catch (Exception e)
@@ -104,8 +104,7 @@ namespace CostPilot.Web.Controllers
         {
             try
             {
-                var userId = this.GetUserId();
-                var model = await this.costRequestService.GetCostRequestDetailsAsync(id, userId);
+                var model = await this.costRequestService.GetCostRequestDetailsAsync(id);
                 if (model == null)
                 {
                     this.Response.StatusCode = 400;
@@ -313,12 +312,12 @@ namespace CostPilot.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AfterDecision()
+        public async Task<IActionResult> AfterDecision(string? searchNumber, string? searchCurrency, string? searchStatus)
         {
             try
             {
                 var userId = this.GetUserId();
-                var model = await this.costRequestService.GetCostRequestsAfterDecisionAsync(userId);
+                var model = await this.costRequestService.GetCostRequestsAfterDecisionAsync(userId, searchNumber, searchCurrency, searchStatus);
                 return this.View(model);
             }
             catch (Exception e)

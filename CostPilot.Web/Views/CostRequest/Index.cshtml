@@ -6,11 +6,35 @@
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
-
-<p class="text-center">
-    <a asp-controller="CostRequest" asp-action="Create" class="btn btn-success">Create New Cost Request</a>
-</p>
 <hr />
+
+<div class="row">
+    <div class="col-sm-12">
+        <form asp-controller="CostRequest" asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-sm-2 mb-2">
+                    <input type="text" class="form-control" name="searchNumber" placeholder="Search by number" />
+                </div>
+                <div class="col-sm-2 mb-2">
+                    <input type="text" class="form-control" name="searchCurrency" placeholder="Search by currency" />
+                </div>
+                <div class="col-sm-2 mb-2">
+                    <input type="text" class="form-control" name="searchStatus" placeholder="Search by status" />
+                </div>
+                <div class="col-sm-3 mb-2">
+                    <button type="submit" class="btn btn-success btn-dark-text w-100 fw-bold rounded">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </button>
+                </div>
+                <div class="col-sm-3 mb-2">
+                    <a asp-controller="CostRequest" asp-action="Index" class="btn btn-secondary btn-dark-text w-100 fw-bold rounded">
+                        <i class="fa-solid fa-rotate-right"></i> Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 @if (Model == null || Model.Any() == false)
 {

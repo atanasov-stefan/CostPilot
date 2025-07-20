@@ -6,9 +6,9 @@ namespace CostPilot.Services.Core.Contracts
     {
         public Task<bool> CreateCostRequestAsync(CostRequestCreateInputModel model, decimal costRequestAmount, string userId);
 
-        public Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId);
+        public Task<IEnumerable<CostRequestIndexViewModel>?> GetMyCostRequestsAsync(string userId, string? searchNumber, string? searchCurrency, string? searchStatus);
 
-        public Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id, string userId);
+        public Task<CostRequestDetailsViewModel?> GetCostRequestDetailsAsync(string? id);
 
         public Task<bool> CancelCostRequestAsync(string? id, string userId);
 
@@ -24,6 +24,6 @@ namespace CostPilot.Services.Core.Contracts
 
         public Task<bool> RejectCostRequestAsync(CostRequestDecisionInputModel model, string userId);
 
-        public Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId);
+        public Task<IEnumerable<CostRequestAfterDecisionViewModel>?> GetCostRequestsAfterDecisionAsync(string userId, string? searchNumber, string? searchCurrency, string? searchStatus);
     }
 }
