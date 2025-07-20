@@ -441,33 +441,45 @@ namespace CostPilot.Services.Core
 
         public async Task<CostRequestDashboardViewModel> GetDashboardStatisticsAsync()
         {
-            var allCostRequests = await this.dbContext.CostRequests
+            var currentYear = DateTime.UtcNow.Year;
+            var costRequestsPool = await this.dbContext.CostRequests
                 .AsNoTracking()
-                .Include(cr => cr.Status)
-                .Where(cr => cr.IsDeleted == false)
+                .Where(cr => cr.IsDeleted == false && (cr.SubmittedOn.Year == currentYear || cr.SubmittedOn.Year == currentYear - 1))
+                .Select(cr => new 
+                {
+                    SubmittedOn = cr.SubmittedOn,
+                    DecisionOn = cr.DecisionOn,
+                    StatusDesc = cr.Status.Description,
+                })
                 .ToListAsync();
 
             var today = DateTime.UtcNow.Date;
             var currentMonth = DateTime.UtcNow.Month;
-            var currentYear = DateTime.UtcNow.Year;
             var dashboardStat = new CostRequestDashboardViewModel()
             {
-                TotalRequestsCurrentDay = allCostRequests.Count(cr => cr.SubmittedOn.Date == today),
-                TotalRequestsCurrentMonth = allCostRequests.Count(cr => cr.SubmittedOn.Year == currentYear && cr.SubmittedOn.Month == currentMonth),
-                TotalRequestsCurrentYear = allCostRequests.Count(cr => cr.SubmittedOn.Year == currentYear),
-                TotalApprovedRequestsCurrentDay = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.Status.Description.ToLower() == ApprovedStatusToLower),
-                TotalApprovedRequestsCurrentMonth = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.Status.Description.ToLower() == ApprovedStatusToLower),
-                TotalApprovedRequestsCurrentYear = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.Status.Description.ToLower() == ApprovedStatusToLower),
-                TotalRejectedRequestsCurrentDay = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.Status.Description.ToLower() == RejectedStatusToLower),
-                TotalRejectedRequestsCurrentMonth = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.Status.Description.ToLower() == RejectedStatusToLower),
-                TotalRejectedRequestsCurrentYear = allCostRequests.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.Status.Description.ToLower() == RejectedStatusToLower),
+                TotalRequestsCurrentDay = costRequestsPool.Count(cr => cr.SubmittedOn.Date == today),
+                TotalRequestsCurrentMonth = costRequestsPool.Count(cr => cr.SubmittedOn.Year == currentYear && cr.SubmittedOn.Month == currentMonth),
+                TotalRequestsCurrentYear = costRequestsPool.Count(cr => cr.SubmittedOn.Year == currentYear),
+                TotalApprovedRequestsCurrentDay = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.StatusDesc.ToLower() == ApprovedStatusToLower),
+                TotalApprovedRequestsCurrentMonth = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.StatusDesc.ToLower() == ApprovedStatusToLower),
+                TotalApprovedRequestsCurrentYear = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.StatusDesc.ToLower() == ApprovedStatusToLower),
+                TotalRejectedRequestsCurrentDay = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Date == today && cr.StatusDesc.ToLower() == RejectedStatusToLower),
+                TotalRejectedRequestsCurrentMonth = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.DecisionOn.Value.Month == currentMonth && cr.StatusDesc.ToLower() == RejectedStatusToLower),
+                TotalRejectedRequestsCurrentYear = costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.StatusDesc.ToLower() == RejectedStatusToLower),
                 
-                AverageResponseTime = allCostRequests
-                .Where(cr => cr.DecisionOn.HasValue)
+                AverageResponseTime = costRequestsPool
+                .Where(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear)
                 .Select(cr => (cr.DecisionOn!.Value - cr.SubmittedOn).TotalDays)
                 .Average()
                 .ToString("F2"),
 
+                LongestWaitTimeBeforeDecision = costRequestsPool
+                .Where(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear)
+                .Select(cr => (cr.DecisionOn!.Value - cr.SubmittedOn).TotalDays)
+                .Max()
+                .ToString("F2"),
+
+                RequestRejectionRate = (((decimal)costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear && cr.StatusDesc.ToLower() == RejectedStatusToLower) / costRequestsPool.Count(cr => cr.DecisionOn.HasValue && cr.DecisionOn.Value.Year == currentYear)) * 100).ToString("F0"),  
             };
 
             return dashboardStat;

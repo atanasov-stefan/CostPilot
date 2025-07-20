@@ -22,5 +22,9 @@ namespace CostPilot.ViewModels.CostRequest
         public int TotalRejectedRequestsCurrentYear { get; set; }
 
         public string AverageResponseTime { get; set; } = null!;
+
+        public string LongestWaitTimeBeforeDecision { get; set; } = null!;
+
+        public string RequestRejectionRate { get; set; } = null!;
     }
 }
