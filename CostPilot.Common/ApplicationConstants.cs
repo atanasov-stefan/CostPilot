@@ -9,5 +9,8 @@
         public const string PendingStatusToLower = "pending";
         public const string ApprovedStatusToLower = "approved";
         public const string RejectedStatusToLower = "rejected";
+        public const string AdminRole = "Admin";
+        public const string UserRole = "User";
+        public const string AnalystRole = "Analyst";
     }
 }

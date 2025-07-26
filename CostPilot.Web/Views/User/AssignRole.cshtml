@@ -1,0 +1,42 @@
+﻿@using CostPilot.ViewModels.User
+@model UserAssignRoleInputModel
+
+@{
+    ViewData["Title"] = "Assign Role To User";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+<div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger text-center"></div>
+
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form asp-controller="User" asp-action="AssignRole" method="post">
+            <input type="hidden" asp-for="@Model.Id" />
+
+            <div class="mb-2">
+                <label asp-for="@Model.Role" class="form-label-add-edit">Role</label>
+                <select asp-for="@Model.Role" class="form-control" aria-required="true">
+                    <option value="">...</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                    <option value="Analyst">Analyst</option>
+                </select>
+                <span asp-validation-for="@Model.Role" class="text-danger"></span>
+            </div>
+
+            <div class="mb-2">
+                <button class="btn btn-success btn-dark-text w-100 py-2 fw-bold rounded" type="submit">
+                    <i class="fas fa-save"></i> Assign
+                </button>
+            </div>
+        </form>
+
+        <div class="mb-2">
+            <a asp-controller="User" asp-action="Index" class="btn btn-secondary btn-dark-text w-100 py-2 fw-bold rounded">
+                <i class="fa-solid fa-xmark"></i> Cancel
+            </a>
+        </div>
+    </div>
+</div>

@@ -34,43 +34,55 @@
                         </li>
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Master Data</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostCenter" asp-action="Index">Cost Centers</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostType" asp-action="Index">Cost Types</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostStatus" asp-action="Index">Cost Statuses</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostCurrency" asp-action="Index">Cost Currencies</a>
-                                </div>
-                            </li>
+                            if (User.IsInRole(AdminRole) == true)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Master Data</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostCenter" asp-action="Index">Cost Centers</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostType" asp-action="Index">Cost Types</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostStatus" asp-action="Index">Cost Statuses</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostCurrency" asp-action="Index">Cost Currencies</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                                </li>
+                            }
                         }
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Requests</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="Create">Create New Request</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="Index">My Requests</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Approvals</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="ForApproval">Pending Approvals</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="AfterDecision">Approval History</a>
-                                </div>
-                            </li>
+                            if (User.IsInRole(UserRole) == true)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Requests</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="Create">Create New Request</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="Index">My Requests</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Approvals</a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="ForApproval">Pending Approvals</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CostRequest" asp-action="AfterDecision">Approval History</a>
+                                    </div>
+                                </li>
+                            }
                         }
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CostRequest" asp-action="Dashboard">Dashboard</a>
-                            </li>
+                            if (User.IsInRole(AnalystRole) == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="CostRequest" asp-action="Dashboard">Dashboard</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <partial name="_LoginPartial" />

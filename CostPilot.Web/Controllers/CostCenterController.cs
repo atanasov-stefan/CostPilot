@@ -7,7 +7,7 @@ using static CostPilot.Common.ValidationErrorMessages;
 
 namespace CostPilot.Web.Controllers
 {
-    public class CostCenterController : BaseController
+    public class CostCenterController : BaseAdminController
     {
         private readonly ICostCenterService costCenterService;
         private readonly IUserService userService;

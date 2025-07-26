@@ -4,6 +4,7 @@ using CostPilot.Services.Core.Contracts;
 using CostPilot.ViewModels.CostRequest;
 using static CostPilot.Common.ValidationErrorMessages;
 using static CostPilot.Common.ApplicationConstants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CostPilot.Web.Controllers
 {
@@ -328,6 +329,7 @@ namespace CostPilot.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AnalystRole)]
         public async Task<IActionResult> Dashboard()
         {
             try

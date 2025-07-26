@@ -7,7 +7,7 @@ using static CostPilot.Common.ApplicationConstants;
 
 namespace CostPilot.Web.Controllers
 {
-    public class CostStatusController : BaseController
+    public class CostStatusController : BaseAdminController
     {
         private readonly ICostStatusService costStatusService;
 

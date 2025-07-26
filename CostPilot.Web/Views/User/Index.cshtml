@@ -1,0 +1,46 @@
+﻿@using CostPilot.ViewModels.User
+@model IEnumerable<UserIndexViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+
+@if (Model == null || Model.Any() == false)
+{
+    <div class="text-center mt-5">
+        <h4>You don't have any users registered yet!</h4>
+    </div>
+}
+else
+{
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Full Name</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Username</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Email</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Roles</th>
+                    <th style="position: sticky; top: 0; background-color: darkslategrey; z-index: 1;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>@user.Roles</td>
+                        <td>
+                            <a asp-controller="User" asp-action="AssignRole" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Assign Role</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
