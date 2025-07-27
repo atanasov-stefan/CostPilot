@@ -45,8 +45,8 @@ namespace CostPilot.Web.Controllers
                     this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
-                
-                model.Roles = await this.roleService.GetAllRolesAsync();
+
+                model.Roles = await this.roleService.GetAllRolesExceptUserRolesAsync(model.Id);
                 return View(model);
             }
             catch (Exception e)
@@ -63,7 +63,7 @@ namespace CostPilot.Web.Controllers
             {
                 if (this.ModelState.IsValid == false)
                 {
-                    model.Roles = await this.roleService.GetAllRolesAsync();
+                    model.Roles = await this.roleService.GetAllRolesExceptUserRolesAsync(model.Id);
                     return this.View(model);
                 }
 
@@ -71,7 +71,7 @@ namespace CostPilot.Web.Controllers
                 if (assignResult == false)
                 {
                     this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
-                    model.Roles = await this.roleService.GetAllRolesAsync();
+                    model.Roles = await this.roleService.GetAllRolesExceptUserRolesAsync(model.Id);
                     return this.View(model);
                 }
 

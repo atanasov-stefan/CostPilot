@@ -18,16 +18,27 @@ namespace CostPilot.Services.Core
             this.userManager = userManager;
         }
 
-        public async Task<IEnumerable<RoleDetailsViewModel>> GetAllRolesAsync()
+        public async Task<IEnumerable<RoleDetailsViewModel>> GetAllRolesExceptUserRolesAsync(string? userId)
         {
-            var roles = await this.roleManager.Roles
-                .OrderBy(r => r.Name)
-                .Select(r => new RoleDetailsViewModel()
+            var roles = new List<RoleDetailsViewModel>();
+            if (string.IsNullOrEmpty(userId) == false &&
+                string.IsNullOrWhiteSpace(userId) == false)
+            {
+                var user = await this.userManager.FindByIdAsync(userId);
+                if (user != null)
                 {
-                    Id = r.Name!,
-                    Name = r.Name!,
-                })
-                .ToListAsync();
+                    var userRoles = await this.userManager.GetRolesAsync(user);
+                    roles = await this.roleManager.Roles
+                        .Where(r => userRoles.Contains(r.Name!) == false)
+                        .OrderBy(r => r.Name)
+                        .Select(r => new RoleDetailsViewModel()
+                        {
+                            Id = r.Name!,
+                            Name = r.Name!,
+                        })
+                        .ToListAsync();
+                }
+            }
 
             return roles;
         }
@@ -42,12 +53,12 @@ namespace CostPilot.Services.Core
                 if (user != null)
                 {
                     var userRoles = await this.userManager.GetRolesAsync(user);
-                    foreach (var role in userRoles.OrderBy(x => x)) 
+                    foreach (var roleName in userRoles.OrderBy(x => x))
                     {
                         roles.Add(new RoleDetailsViewModel()
                         {
-                            Id = role,
-                            Name = role,
+                            Id = roleName,
+                            Name = roleName,
                         });
                     }
                 }
