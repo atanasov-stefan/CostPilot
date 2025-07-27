@@ -49,6 +49,9 @@ namespace CostPilot.Services.Core
         public async Task<IEnumerable<UserDetailsViewModel>> GetUserDetailsAsync()
         {
             var users = await this.userManager.Users
+                .Where(u => u.UserName != "Admin")
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName)
                 .Select(u => new UserDetailsViewModel()
                 {
                     Id = u.Id,
@@ -59,16 +62,16 @@ namespace CostPilot.Services.Core
             return users;
         }
 
-        public async Task<UserAssignRoleInputModel?> GetUserForRoleAssignmentAsync(string? id)
+        public async Task<UserRoleInputModel?> GetUserForRoleAssignmentOrRemovalAsync(string? id)
         {
-            UserAssignRoleInputModel? model = null;
+            UserRoleInputModel? model = null;
             if (string.IsNullOrEmpty(id) == false && 
                 string.IsNullOrWhiteSpace(id) == false)
             {
                 var user = await this.userManager.FindByIdAsync(id);
                 if (user != null)
                 {
-                    model = new UserAssignRoleInputModel()
+                    model = new UserRoleInputModel()
                     {
                         Id = user.Id,
                         Role = "",
@@ -79,7 +82,7 @@ namespace CostPilot.Services.Core
             return model;
         }
 
-        public async Task<bool> AssignRoleToUserAsync(UserAssignRoleInputModel model)
+        public async Task<bool> AssignRoleToUserAsync(UserRoleInputModel model)
         {
             var operationResult = false;
             if (string.IsNullOrEmpty(model.Id) == false &&
@@ -93,6 +96,28 @@ namespace CostPilot.Services.Core
                     if (userIsInRole == false)
                     {
                         var result = await userManager.AddToRoleAsync(user, model.Role);
+                        operationResult = result.Succeeded;
+                    }
+                }
+            }
+
+            return operationResult;
+        }
+
+        public async Task<bool> RemoveRoleFromUserAsync(UserRoleInputModel model)
+        {
+            var operationResult = false;
+            if (string.IsNullOrEmpty(model.Id) == false &&
+                string.IsNullOrWhiteSpace(model.Id) == false)
+            {
+                var user = await this.userManager.FindByIdAsync(model.Id);
+                var roleExists = await this.roleManager.RoleExistsAsync(model.Role);
+                if (user != null && roleExists == true)
+                {
+                    var userIsInRole = await this.userManager.IsInRoleAsync(user, model.Role);
+                    if (userIsInRole == true)
+                    {
+                        var result = await userManager.RemoveFromRoleAsync(user, model.Role);
                         operationResult = result.Succeeded;
                     }
                 }

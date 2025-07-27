@@ -37,6 +37,7 @@ else
                         <td>@user.Roles</td>
                         <td>
                             <a asp-controller="User" asp-action="AssignRole" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Assign Role</a>
+                            <a asp-controller="User" asp-action="RemoveRole" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Remove Role</a>
                         </td>
                     </tr>
                 }

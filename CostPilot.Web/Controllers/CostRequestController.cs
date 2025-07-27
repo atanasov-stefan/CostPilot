@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CostPilot.Web.Controllers
 {
-    public class CostRequestController : BaseController
+    public class CostRequestController : BaseUserController
     {
         private readonly ICostCenterService costCenterService;
         private readonly ICostCurrencyService costCurrencyService;

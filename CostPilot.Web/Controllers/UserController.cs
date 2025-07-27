@@ -10,10 +10,13 @@ namespace CostPilot.Web.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService userService;
+        private readonly IRoleService roleService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,
+            IRoleService roleService)
         {
             this.userService = userService;
+            this.roleService = roleService;
         }
 
         [HttpGet]
@@ -36,13 +39,14 @@ namespace CostPilot.Web.Controllers
         {
             try
             {
-                var model = await this.userService.GetUserForRoleAssignmentAsync(id);
+                var model = await this.userService.GetUserForRoleAssignmentOrRemovalAsync(id);
                 if (model == null)
                 {
                     this.Response.StatusCode = 400;
                     return this.View(PathToBadRequestView);
                 }
                 
+                model.Roles = await this.roleService.GetAllRolesAsync();
                 return View(model);
             }
             catch (Exception e)
@@ -53,12 +57,13 @@ namespace CostPilot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignRole(UserAssignRoleInputModel model)
+        public async Task<IActionResult> AssignRole(UserRoleInputModel model)
         {
             try
             {
                 if (this.ModelState.IsValid == false)
                 {
+                    model.Roles = await this.roleService.GetAllRolesAsync();
                     return this.View(model);
                 }
 
@@ -66,6 +71,57 @@ namespace CostPilot.Web.Controllers
                 if (assignResult == false)
                 {
                     this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    model.Roles = await this.roleService.GetAllRolesAsync();
+                    return this.View(model);
+                }
+
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveRole(string? id)
+        {
+            try
+            {
+                var model = await this.userService.GetUserForRoleAssignmentOrRemovalAsync(id);
+                if (model == null)
+                {
+                    this.Response.StatusCode = 400;
+                    return this.View(PathToBadRequestView);
+                }
+
+                model.Roles = await this.roleService.GetUserRolesAsync(model.Id);
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.ExceptionCatchRedirect();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveRole(UserRoleInputModel model)
+        {
+            try
+            {
+                if (this.ModelState.IsValid == false)
+                {
+                    model.Roles = await this.roleService.GetUserRolesAsync(model.Id);
+                    return this.View(model);
+                }
+
+                var removeResult = await this.userService.RemoveRoleFromUserAsync(model);
+                if (removeResult == false)
+                {
+                    this.ModelState.AddModelError(string.Empty, CreateEditOverallErrorMessage);
+                    model.Roles = await this.roleService.GetUserRolesAsync(model.Id);
                     return this.View(model);
                 }
 

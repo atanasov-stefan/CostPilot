@@ -8,8 +8,10 @@ namespace CostPilot.Services.Core.Contracts
 
         public Task<IEnumerable<UserIndexViewModel>> GetUserFullDetailsAsync();
 
-        public Task<UserAssignRoleInputModel?> GetUserForRoleAssignmentAsync(string? id);
+        public Task<UserRoleInputModel?> GetUserForRoleAssignmentOrRemovalAsync(string? id);
 
-        public Task<bool> AssignRoleToUserAsync(UserAssignRoleInputModel model);
+        public Task<bool> AssignRoleToUserAsync(UserRoleInputModel model);
+
+        public Task<bool> RemoveRoleFromUserAsync(UserRoleInputModel model);
     }
 }
