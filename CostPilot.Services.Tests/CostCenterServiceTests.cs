@@ -32,7 +32,7 @@ namespace CostPilot.Services.Tests
         [TearDown]
         public void TearDown()
         {
-            dbContext.Dispose();
+            this.dbContext.Dispose();
         }
 
         [Test]
