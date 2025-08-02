@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{24
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CostPilot.Services.Core", "CostPilot.Services.Core\CostPilot.Services.Core.csproj", "{DB9386F2-A3A0-4368-8C50-1BB416E86F4A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{196E7958-8FF3-4E68-A0C5-F4552B960527}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CostPilot.Services.Tests", "CostPilot.Services.Tests\CostPilot.Services.Tests.csproj", "{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,10 @@ Global
 		{DB9386F2-A3A0-4368-8C50-1BB416E86F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB9386F2-A3A0-4368-8C50-1BB416E86F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB9386F2-A3A0-4368-8C50-1BB416E86F4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +69,7 @@ Global
 		{E1EA1028-9C93-44B5-9964-F6DCCA90B916} = {D51F8A51-9C77-4C3A-A82F-7CCE4508EB89}
 		{24FDBD67-5CB0-4966-B178-30943A3358A7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{DB9386F2-A3A0-4368-8C50-1BB416E86F4A} = {24C8D48E-3C69-4A19-BD5E-9D7706B965C8}
+		{4B3196C5-7CF1-484D-9FDF-C4F73BF7F00F} = {196E7958-8FF3-4E68-A0C5-F4552B960527}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F91729A7-D7B9-4C8D-A958-364AB1A6B2B6}
