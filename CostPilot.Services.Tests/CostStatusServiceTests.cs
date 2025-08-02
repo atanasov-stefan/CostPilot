@@ -1,8 +1,9 @@
-﻿using CostPilot.Data;
+﻿using Microsoft.EntityFrameworkCore;
+
+using CostPilot.Data;
 using CostPilot.Data.Models;
 using CostPilot.Services.Core;
 using CostPilot.ViewModels.CostStatus;
-using Microsoft.EntityFrameworkCore;
 
 namespace CostPilot.Services.Tests
 {
