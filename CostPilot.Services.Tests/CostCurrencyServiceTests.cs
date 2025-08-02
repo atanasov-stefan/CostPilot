@@ -20,7 +20,7 @@ namespace CostPilot.Services.Tests
                 .UseInMemoryDatabase($"TestDb_{System.Guid.NewGuid()}")
                 .Options;
             this.dbContext = new CostPilotDbContext(options);
-            this.service = new CostCurrencyService(dbContext);
+            this.service = new CostCurrencyService(this.dbContext);
         }
 
         [TearDown]

@@ -26,7 +26,7 @@ namespace CostPilot.Services.Tests
 
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             this.userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-            this.service = new CostCenterService(dbContext, userManagerMock.Object);
+            this.service = new CostCenterService(this.dbContext, this.userManagerMock.Object);
         }
 
         [TearDown]
